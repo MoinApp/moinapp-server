@@ -2,11 +2,11 @@ db = require '../db/'
 
 exports.getUser = (req, res, next) ->
   
-  name = req.params?.name
+  username = req.params?.username
   
   db.User.find({
     where: {
-      username: name
+      username: username
     }
   }).complete (err, user) ->
     throw err if err
