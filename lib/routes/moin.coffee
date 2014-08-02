@@ -45,11 +45,14 @@ module.exports = (req, res, next) ->
       if !user
         next new restify.ResourceNotFoundError 'User does not exist.'
       else
-      
-        # TODO: MOIN him!
-        res.send 200, {
-          status: 0,
-          message: "Moin sent."
-        }
-  
-  next()
+        # Send Moin!
+        from_sessionToken = req.query?.session
+        _sendPush from_sessionToken, user, (err, results) ->
+          return next err if !!err
+          
+          console.log "Result from gcm send:", results
+          
+          res.send 200, {
+            status: 0,
+            message: "Moin sent."
+          }
