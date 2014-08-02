@@ -47,7 +47,7 @@ exports.moin = (req, res, next) ->
       else
         # Send Moin!
         from_sessionToken = req.query?.session
-        _sendPush from_sessionToken, user, (err, results) ->
+        exports._sendPush from_sessionToken, user, (err, results) ->
           return next err if !!err
           
           console.log "Result from gcm send:", results
