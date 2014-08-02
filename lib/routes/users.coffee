@@ -71,7 +71,7 @@ exports.signIn = (req, res, next) ->
       }
     else
       session.getOrCreateSession username, (err, sessionToken) ->
-        throw err if er
+        throw err if err
         
         res.send 200, {
           status: 0,
