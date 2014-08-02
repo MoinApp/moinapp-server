@@ -1,8 +1,9 @@
 Sequelize = require 'sequelize'
 uuid = require 'node-uuid'
 
+HEROKU_URL = process.env.HEROKU_POSTGRESQL_JADE_URL
 isHeroku = ->
-  return process.env.HEROKU_POSTGRESQL_JADE_URL?
+  return HEROKU_URL?
   
 
 if !isHeroku()
@@ -19,7 +20,7 @@ if !isHeroku()
     logging: console.log
   }
 else
-  match = process.env.HEROKU_POSTGRESQL_BRONZE_URL.match /postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/
+  match = process.env.HEROKU_URL.match /postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/
   
   sequelize = new Sequelize match[5], match[1], match[2], {
     dialect:  'postgres',
