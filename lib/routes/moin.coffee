@@ -9,7 +9,7 @@ exports._sendPush = (fromUserSessionToken, toUser, callback) ->
       session: fromUserSessionToken
     }
   }).complete (err, fromUser) ->
-    callback err
+    return callback err if !!err
     
     if !fromUser
       return callback new Error 'Sending user not found.'
