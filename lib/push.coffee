@@ -1,11 +1,14 @@
-# TODO use GCM to push moins
 gcm = require 'node-gcm'
 
 gcmSender = null
 
 exports._checkInit = ->
   if !gcmSender
-    exports._init process.env.GCM_API_KEY
+    apiKey = process.env.GCM_API_KEY
+    
+    if !apiKey
+      throw new Error 'GCM_API_KEY not found.'
+    exports._init apiKey
     
 exports._init = (apiKey) ->
   gcmSender = new gcm.Sender apiKey
