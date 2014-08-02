@@ -1,5 +1,4 @@
 Sequelize = require 'sequelize'
-uuid = require 'node-uuid'
 
 HEROKU_URL = process.env.HEROKU_POSTGRESQL_JADE_URL
 isHeroku = ->
@@ -31,40 +30,8 @@ else
   }
 
 
-User = sequelize.define 'User', {
-  uid: Sequelize.STRING,
-  username: Sequelize.STRING,
-  password: Sequelize.STRING,
-  emailHash: Sequelize.STRING, # md5
-  
-  session: Sequelize.STRING
-}, {
-  classMethods: {
-    createUser: (properties) ->
-      console.log 'createUser:', properties
-      properties.uid = uuid.v4()
-      
-      User.create(properties)
-  },
-  instanceMethods: {
-    getPublicModel: ->
-      {
-        id: this.uid,
-        username: this.username,
-        email_hash: this.emailHash
-      }
-  }
-}
-
-gcmID = sequelize.define 'gcmID', {
-  uid: Sequelize.STRING
-}, {
-  instanceMethods: {
-    getPublicModel: ->
-      this.uid
-  }
-}
-
+User = require('./models/user') sequelize
+gcmID = require('./models/gcmID') sequelize
 User.hasMany gcmID
 
 if !isHeroku()
