@@ -28,8 +28,13 @@ if cluster.isMaster
     else
       startFork()
       console.log "Reforked."
+  
   # fork 1 for now
   startFork()
+  # TODO: if we want to use clusters, better only use db.coffee only once
+  # toughts: maybe just instantiate once in the master and communicate with it from the forks via messages to get db objects?
+  #for i in [1...numCPUs] by 1
+  #  startFork()
 
 else
   # x'th start
