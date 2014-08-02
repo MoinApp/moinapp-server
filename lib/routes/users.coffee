@@ -103,20 +103,30 @@ exports.addGCMId = (req, res, next) ->
     return next err if !!err
     
     if !!user
-      db.gcmID.create({
-        uid: gcmIdString
-      }).complete (err, gcmId) ->
+      db.gcmID.find({
+        where: {
+          uid: gcmIdString
+        }
+      }).complete (err, existingGcmID) ->
         return next err if !!err
         
-        user.addGcmID(gcmId).complete (err) ->
+        if !!existingGcmID
+          return next new restify.InvalidArgument 'GcmID already existing.'
+          
+        db.gcmID.create({
+          uid: gcmIdString
+        }).complete (err, gcmId) ->
           return next err if !!err
           
-          res.send 200, {
-            status: 0,
-            message: "GcmID added."
-          }
-          
-          next()
+          user.addGcmID(gcmId).complete (err) ->
+            return next err if !!err
+            
+            res.send 200, {
+              status: 0,
+              message: "GcmID added."
+            }
+            
+            next()
     else
       next new restify.InvalidCredentialsError 'User could not be found for session.'
         
