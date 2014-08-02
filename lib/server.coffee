@@ -27,6 +27,12 @@ exports._initRoutes = (server) ->
   
   # Routes without login
   
+  server.get '/', (req, res, next) ->
+    pkg = require '../package'
+    
+    res.setHeader 'Location', pkg.homepage # redirect here
+    res.send 302
+  
   server.post '/user', users.newUser
   server.post '/user/session', users.signIn
   
