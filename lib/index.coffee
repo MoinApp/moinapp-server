@@ -8,11 +8,20 @@ if cluster.isMaster
   numCPUs = os.cpus().length
   console.log "Cluster:", "Could spawn #{numCPUs} forks."
   
+  numberOfForks = 0
+  
   startFork = ->
     cluster.fork()
   
+  cluster.on 'listening', (worker) ->
+    numberOfForks++
+    console.log "Currently running #{numberOfForks} forks."
+    
   cluster.on 'exit', (worker, code, signal) ->
+    numberOfForks--
+    
     console.log "Worker #{worker} died with signal #{signal}."
+    console.log "Currently running #{numberOfForks} forks."
     
     if signal == null
       console.log "Expecting syntax error. Stopping."
