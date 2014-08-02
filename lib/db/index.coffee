@@ -1,4 +1,5 @@
 Sequelize = require 'sequelize'
+uuid = require 'node-uuid'
 
 dbConfig = {
   name: 'db.sqlite',
@@ -13,8 +14,20 @@ sequelize = new Sequelize dbConfig.name, dbConfig.username, dbConfig.password, {
 }
 
 User = sequelize.define 'User', {
+  uid: Sequelize.STRING,
   username: Sequelize.STRING,
   password: Sequelize.STRING
+}, {
+  classMethods: {
+    createUser: (username, password) ->
+      uid = uuid.v4()
+      
+      User.create({
+        username: username,
+        password: password,
+        uid: uid
+      })
+  }
 }
 
 GCM_ID = sequelize.define 'GCM_ID', {
