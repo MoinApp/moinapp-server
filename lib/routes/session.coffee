@@ -36,3 +36,14 @@ exports.createSession = (username, callback) ->
         
         callback null, uid
   
+exports.getOrCreateSession = (username, callback) ->
+  
+  exports.getSession username, (err, sessionToken) ->
+    throw err if err
+    
+    if sessionToken
+      callback null, sessionToken
+    else
+      
+      exports.createSession username, (err, sessionToken) ->
+        callback err, sessionToken

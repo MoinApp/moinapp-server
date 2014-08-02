@@ -70,19 +70,10 @@ exports.signIn = (req, res, next) ->
         error: 'Username or Password is wrong.'
       }
     else
-      session.getSession username, (err, sessionToken) ->
-        throw err if err
+      session.getOrCreateSession username, (err, sessionToken) ->
+        throw err if er
         
-        if !sessionToken
-          session.createSession username, (err, sessionToken) ->
-            throw err if err
-            
-            res.send 200, {
-              status: 0,
-              session: sessionToken
-            }
-        else
-          res.send 200, {
-            status: 0,
-            session: sessionToken
-          }
+        res.send 200, {
+          status: 0,
+          session: sessionToken
+        }
