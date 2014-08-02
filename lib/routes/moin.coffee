@@ -21,7 +21,7 @@ _sendPush = (fromUserSessionToken, toUser, callback) ->
         
       gcmIDs = ( gcmId.getPublicModel() for gcmId in gcmIDs )
         
-      push.sendMessage fromUser, gcmIDs
+      push.sendMessage fromUser, gcmIDs, callback
 
 module.exports = (req, res, next) ->
   
