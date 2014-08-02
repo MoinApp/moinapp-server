@@ -38,6 +38,11 @@ exports.newUser = (req, res, next) ->
       next new restify.RestError 'Username is already taken.'
     else
       
+      if username.length < 3
+        return next new restify.InvalidArgumentError 'Username is too short.'
+      if password.length < 5
+        return next new restify.InvalidArgumentError 'Password is too short.'
+      
       db.User.createUser({
         username: username,
         password: password,
