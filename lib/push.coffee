@@ -24,4 +24,4 @@ exports.sendMessage = (sendingUser, toGCMIDs, callback) ->
   
   gcmSender?.send message, toGCMIDs, numberOfRetries, (err, result) ->
     console.log "Result from gcm send:", result
-    callback err, result
+    callback? err, result
