@@ -11,8 +11,8 @@ exports.init = ->
   # enable throttling
   server.use restify.throttle {
     # requests per second
-    rate: 1,
-    burst: 2,
+    rate: 5,
+    burst: 10,
     ip: true
   }
   
