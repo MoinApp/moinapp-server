@@ -37,7 +37,8 @@ GCM_ID = sequelize.define 'GCM_ID', {
 User.hasMany GCM_ID
 GCM_ID.hasOne User
 
-sequelize.sync({force: true})
+sequelize.sync({force: true}).success () ->
+  User.createUser 'sgade', 'test'
 
 module.exports = {
   Sequelize: Sequelize,
