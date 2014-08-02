@@ -1,0 +1,27 @@
+{
+  "name": "moinapp-server",
+  "version": "0.0.1",
+  "description": "moinapp-server ==============",
+  "main": "lib/index.js",
+  "dependencies": {
+    "coffee-script": "^1.7.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MoinApp/moinapp-server.git"
+  },
+  "keywords": [
+    "moin",
+    "yo",
+    "coffeescript"
+  ],
+  "author": "Sören Gade",
+  "license": "GPLv3",
+  "bugs": {
+    "url": "https://github.com/MoinApp/moinapp-server/issues"
+  },
+  "homepage": "https://github.com/MoinApp/moinapp-server"
+}
