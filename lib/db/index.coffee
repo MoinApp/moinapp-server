@@ -1,18 +1,34 @@
 Sequelize = require 'sequelize'
 uuid = require 'node-uuid'
 
-dbConfig = {
-  name: 'db.sqlite',
-  username: 'admin',
-  password: 'admin'
-}
+isHeroku = ->
+  return process.env.HEROKU_POSTGRESQL_JADE_URL?
+  
 
-sequelize = new Sequelize dbConfig.name, dbConfig.username, dbConfig.password, {
-  dialect: 'sqlite',
-  storage: dbConfig.name,
-  #logging: console.log
-  logging: false
-}
+if !isHeroku()
+  # local
+  dbConfig = {
+    name: 'db.sqlite',
+    username: 'admin',
+    password: 'admin'
+  }
+
+  sequelize = new Sequelize dbConfig.name, dbConfig.username, dbConfig.password, {
+    dialect: 'sqlite',
+    storage: dbConfig.name,
+    logging: console.log
+  }
+else
+  match = process.env.HEROKU_POSTGRESQL_BRONZE_URL.match /postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/
+  
+  sequelize = new Sequelize match[5], match[1], match[2], {
+    dialect:  'postgres',
+    protocol: 'postgres',
+    port:     match[4],
+    host:     match[3],
+    logging:  false
+  }
+
 
 User = sequelize.define 'User', {
   uid: Sequelize.STRING,
