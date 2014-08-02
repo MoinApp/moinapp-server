@@ -11,6 +11,7 @@
     "sqlite3": "^2.2.4"
   },
   "scripts": {
+    "start": "node lib",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "engines": {
