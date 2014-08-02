@@ -15,13 +15,13 @@ if cluster.isMaster
   
   cluster.on 'listening', (worker) ->
     numberOfForks++
-    console.log "Currently running #{numberOfForks} forks."
+    console.log "Currently running #{numberOfForks} fork(s)."
     
   cluster.on 'exit', (worker, code, signal) ->
     numberOfForks--
     
     console.log "Worker #{worker} died with signal #{signal}."
-    console.log "Currently running #{numberOfForks} forks."
+    console.log "Currently running #{numberOfForks} fork(s)."
     
     if signal == null
       console.log "Expecting syntax error. Stopping."
