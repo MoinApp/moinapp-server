@@ -48,7 +48,8 @@ if !isHeroku()
           user.addGcmID gcmId
 else
   sequelize.sync().complete (err) ->
-    console.log "Error syncing database:", err
+    if !!err
+      console.log "Error syncing database:", err
 
 module.exports = {
   Sequelize: Sequelize,
