@@ -17,6 +17,8 @@ exports.init = ->
   
   # make body requests possible
   server.use restify.bodyParser()
+  # make query parameters available
+  server.use restify.queryParser()
   
   exports._initRoutes server
   
