@@ -16,7 +16,7 @@ exports._init = (apiKey) ->
 exports.sendMessage = (sendingUser, toGCMIDs, callback) ->
   exports._checkInit()
   
-  message = new gcm.Message
+  message = new gcm.Message()
   #message.addDataWithKeyValue 'from', sendingUser.getPublicModel()
   message.addDataWithObject sendingUser.getPublicModel()
   
