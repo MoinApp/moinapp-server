@@ -52,7 +52,8 @@ User.hasMany gcmID
 sequelize.sync({force: true}).success () ->
   User.createUser({
     username: 'sgade',
-    password: 'test'
+    password: 'test',
+    emailHash: '1de9ab0eb9b23a2da38f6857de628625'
   }).complete (err, user) ->
     
     gcmID.create({
