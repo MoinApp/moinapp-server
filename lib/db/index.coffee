@@ -38,6 +38,11 @@ User = sequelize.define 'User', {
 
 gcmID = sequelize.define 'gcmID', {
   uid: Sequelize.STRING
+}, {
+  instanceMethods: {
+    getPublicModel: ->
+      this.uid
+  }
 }
 
 User.hasMany gcmID
