@@ -80,3 +80,32 @@ exports.signIn = (req, res, next) ->
         }
         
         next()
+        
+exports.addGCMId = (req, res, next) ->
+  
+  sessionToken = req.query?.session
+  gcmIdString = req.body?.gcm_id
+  
+  db.User.find({
+    where: {
+      session: sessionToken
+    }
+  }).complete (err, user) ->
+    throw err if err
+    
+    if !!user
+      db.gcmID.create({
+        uid: gcmIdString
+      }).complete (err, gcmId) ->
+        throw err if err
+        
+        user.addGcmID(gcmId).complete (err) ->
+          throw err if err
+          
+          res.send 200, {
+            status: 0,
+            message: "GcmID added."
+          }
+          
+          next()
+        

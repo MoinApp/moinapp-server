@@ -37,6 +37,7 @@ exports._initRoutes = (server) ->
   server.post '/moin', require './routes/moin'
   # Users
   server.get '/user/:username', users.getUser
+  server.post '/user/gcm', users.addGCMId
 
 ###
 # RUN

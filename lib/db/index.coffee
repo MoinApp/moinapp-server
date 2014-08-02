@@ -36,23 +36,27 @@ User = sequelize.define 'User', {
   }
 }
 
-GCM_ID = sequelize.define 'GCM_ID', {
+gcmID = sequelize.define 'gcmID', {
   uid: Sequelize.STRING
 }
 
-User.hasMany GCM_ID
-GCM_ID.hasOne User
+User.hasMany gcmID
 
 sequelize.sync({force: true}).success () ->
-  User.createUser {
+  User.createUser({
     username: 'sgade',
     password: 'test'
-  }
+  }).complete (err, user) ->
+    
+    gcmID.create({
+      uid: 'blub'
+    }).complete (err, gcmId) ->
+      user.addGcmID gcmId
 
 module.exports = {
   Sequelize: Sequelize,
   sequelize: sequelize,
   
   User: User,
-  GCM_ID: GCM_ID
+  gcmID: gcmID
 }
