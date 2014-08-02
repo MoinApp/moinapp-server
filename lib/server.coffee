@@ -15,7 +15,8 @@ exports._initRoutes = (server) ->
   
   server.post '/moin', require './routes/moin'
   # Users
-  server.get '/user/:name', users.getUser
+  server.get '/user/:username', users.getUser
+  server.post '/user', users.newUser
 
 ###
 # RUN

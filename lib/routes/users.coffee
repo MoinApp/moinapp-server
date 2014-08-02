@@ -1,4 +1,5 @@
 db = require '../db/'
+session = require './session'
 
 exports.getUser = (req, res, next) ->
   
@@ -17,3 +18,35 @@ exports.getUser = (req, res, next) ->
       res.send user.getPublicModel()
       
     next()
+
+exports.newUser = (req, res, next) ->
+  
+  username = req.body?.username
+  password = req.body?.password
+  
+  db.User.find({
+    where: {
+      username: username
+    }
+  }).complete (err, user) ->
+    throw err if err
+    
+    if !!user
+      res.send 400, { status: -1, error: 'Username is already taken.' }
+    else
+      
+      db.User.createUser({
+        username: username,
+        password: password
+      }).complete (err, user) ->
+        throw err if err
+        
+        session.createSession user.username, (err, session) ->
+          throw err if err
+          
+          res.send {
+            status: 0,
+            session: session
+          }
+          
+          next()
