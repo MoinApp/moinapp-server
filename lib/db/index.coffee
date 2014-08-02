@@ -50,7 +50,7 @@ gcmID = sequelize.define 'gcmID', {
 
 User.hasMany gcmID
 
-sequelize.sync({force: true}).success () ->
+sequelize.sync().success () ->
   User.createUser({
     username: 'sgade',
     password: 'test',
