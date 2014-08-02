@@ -19,6 +19,8 @@ _sendPush = (fromUserSessionToken, toUser, callback) ->
       if !gcmIDs
         return callback new Error 'No device registered.'
         
+      gcmIDs = ( gcmId.getPublicModel() for gcmId in gcmIDs )
+        
       push.sendMessage fromUser, gcmIDs
 
 module.exports = (req, res, next) ->
