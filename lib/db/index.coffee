@@ -21,14 +21,11 @@ User = sequelize.define 'User', {
   session: Sequelize.STRING
 }, {
   classMethods: {
-    createUser: (username, password) ->
+    createUser: (properties) ->
+      console.log 'createUser:', properties
       uid = uuid.v4()
       
-      User.create({
-        username: username,
-        password: password,
-        uid: uid
-      })
+      User.create(properties)
   },
   instanceMethods: {
     getPublicModel: ->
@@ -47,7 +44,10 @@ User.hasMany GCM_ID
 GCM_ID.hasOne User
 
 sequelize.sync({force: true}).success () ->
-  User.createUser 'sgade', 'test'
+  User.createUser {
+    username: 'sgade',
+    password: 'test'
+  }
 
 module.exports = {
   Sequelize: Sequelize,
