@@ -27,6 +27,13 @@ User = sequelize.define 'User', {
         password: password,
         uid: uid
       })
+  },
+  instanceMethods: {
+    getPublicModel: ->
+      {
+        id: this.uid,
+        name: this.username
+      }
   }
 }
 

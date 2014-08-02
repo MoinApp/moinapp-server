@@ -14,6 +14,6 @@ exports.getUser = (req, res, next) ->
     if !user
       res.send 404, {}
     else
-      res.send user
+      res.send user.getPublicModel()
       
     next()
