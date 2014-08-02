@@ -1,4 +1,27 @@
 db = require '../db/'
+push = require '../push'
+
+_sendPush = (fromUserSessionToken, toUser, callback) ->
+  
+  db.User.find({
+    where: {
+      session: fromUserSessionToken
+    }
+  }).complete (err, fromUser) ->
+    throw err if err
+    
+    if !fromUser
+      return callback new Error 'Sending user not found.'
+      
+    toUser.getGcmIDs().complete (err, gcmIDs) ->
+      throw err if err
+      
+      if !gcmIDs
+        return callback new Error 'No device registered.'
+        
+      gcmIDs = ( gcmId.getPublicModel() for gcmId in gcmIDs )
+        
+      push.sendMessage fromUser, gcmIDs
 
 module.exports = (req, res, next) ->
   
@@ -24,6 +47,7 @@ module.exports = (req, res, next) ->
           error: 'User does not exist.'
         }
       else
+      
         # TODO: MOIN him!
         res.send 200, {
           status: 0,
