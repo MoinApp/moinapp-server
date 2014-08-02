@@ -17,6 +17,7 @@ exports._initRoutes = (server) ->
   # Users
   server.get '/user/:username', users.getUser
   server.post '/user', users.newUser
+  server.post '/user/session', users.signIn
 
 ###
 # RUN

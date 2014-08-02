@@ -41,12 +41,48 @@ exports.newUser = (req, res, next) ->
       }).complete (err, user) ->
         throw err if err
         
-        session.createSession user.username, (err, session) ->
+        session.createSession user.username, (err, sessionToken) ->
           throw err if err
           
           res.send {
             status: 0,
-            session: session
+            session: sessionToken
           }
           
           next()
+          
+exports.signIn = (req, res, next) ->
+  
+  username = req.body?.username
+  password = req.body?.password
+  
+  db.User.find({
+    where: {
+      username: username,
+      password: password
+    }
+  }).complete (err, user) ->
+    throw err if err
+    
+    if !user
+      res.send 400, {
+        status: -1,
+        error: 'Username or Password is wrong.'
+      }
+    else
+      session.getSession username, (err, sessionToken) ->
+        throw err if err
+        
+        if !sessionToken
+          session.createSession username, (err, sessionToken) ->
+            throw err if err
+            
+            res.send 200, {
+              status: 0,
+              session: sessionToken
+            }
+        else
+          res.send 200, {
+            status: 0,
+            session: sessionToken
+          }

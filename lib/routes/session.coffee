@@ -1,7 +1,7 @@
 uuid = require 'node-uuid'
 db = require '../db/'
 
-exports.getSessionForUser = (username, callback) ->
+exports.getSession = (username, callback) ->
   
   db.User.find({
     where: {
