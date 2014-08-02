@@ -25,6 +25,9 @@ module.exports = (req, res, next) ->
         }
       else
         # TODO: MOIN him!
-        res.send 200
+        res.send 200, {
+          status: 0,
+          message: "Moin sent."
+        }
   
   next()
