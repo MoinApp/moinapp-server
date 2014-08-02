@@ -15,7 +15,7 @@ exports._sendPush = (fromUserSessionToken, toUser, callback) ->
       return callback new Error 'Sending user not found.'
       
     toUser.getGcmIDs().complete (err, gcmIDs) ->
-      callback err
+      return callback err if !!err
       
       if !gcmIDs
         return callback new Error 'No device registered.'
