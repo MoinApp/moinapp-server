@@ -7,6 +7,7 @@ server = null
 ###
 exports.init = ->
   server = restify.createServer()
+  server.use restify.bodyParser()
   
   exports._initRoutes server
   
