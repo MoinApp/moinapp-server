@@ -12,7 +12,7 @@ exports.getUser = (req, res, next) ->
     throw err if err
     
     if !user
-      res.send 400
+      res.send 404, {}
     else
       res.send user
       
