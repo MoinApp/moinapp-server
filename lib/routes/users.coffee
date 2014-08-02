@@ -69,6 +69,7 @@ exports.signIn = (req, res, next) ->
         status: -1,
         error: 'Username or Password is wrong.'
       }
+      next()
     else
       session.getOrCreateSession username, (err, sessionToken) ->
         throw err if err
@@ -77,3 +78,5 @@ exports.signIn = (req, res, next) ->
           status: 0,
           session: sessionToken
         }
+        
+        next()
