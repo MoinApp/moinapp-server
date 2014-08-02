@@ -20,7 +20,7 @@ if !isHeroku()
     logging: console.log
   }
 else
-  match = process.env.HEROKU_URL.match /postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/
+  match = HEROKU_URL.match /postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/
   
   sequelize = new Sequelize match[5], match[1], match[2], {
     dialect:  'postgres',
