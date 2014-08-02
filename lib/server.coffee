@@ -1,4 +1,5 @@
 restify = require 'restify'
+users = require './routes/users'
 
 server = null
 ###
@@ -12,6 +13,8 @@ exports.init = ->
 exports._initRoutes = (server) ->
   
   server.post '/moin', require './routes/moin'
+  # Users
+  server.get '/user/:name', users.getUser
 
 ###
 # RUN
