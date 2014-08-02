@@ -13,7 +13,7 @@ exports._checkInit = ->
 exports._init = (apiKey) ->
   gcmSender = new gcm.Sender apiKey
 
-exports.sendMessage = (sendingUser, toGCMIDs) ->
+exports.sendMessage = (sendingUser, toGCMIDs, callback) ->
   exports._checkInit()
   
   message = new gcm.Message
@@ -24,3 +24,4 @@ exports.sendMessage = (sendingUser, toGCMIDs) ->
   
   gcmSender?.send message, toGCMIDs, numberOfRetries, (err, result) ->
     console.log "Result from gcm send:", result
+    callback err, result
