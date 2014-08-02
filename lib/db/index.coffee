@@ -10,7 +10,8 @@ dbConfig = {
 sequelize = new Sequelize dbConfig.name, dbConfig.username, dbConfig.password, {
   dialect: 'sqlite',
   storage: dbConfig.name,
-  logging: console.log # for now
+  #logging: console.log
+  logging: false
 }
 
 User = sequelize.define 'User', {
