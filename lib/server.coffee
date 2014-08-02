@@ -1,4 +1,5 @@
 restify = require 'restify'
+moin = require './routes/moin'
 users = require './routes/users'
 session = require './routes/session'
 
@@ -40,7 +41,7 @@ exports._initRoutes = (server) ->
   
   server.use session.requireLogin
   
-  server.post '/moin', require './routes/moin'
+  server.post '/moin', moin.moin
   # Users
   server.get '/user/:username', users.getUser
   server.post '/user/gcm', users.addGCMId

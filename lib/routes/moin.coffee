@@ -2,7 +2,7 @@ restify = require 'restify'
 db = require '../db/'
 push = require '../push'
 
-_sendPush = (fromUserSessionToken, toUser, callback) ->
+exports._sendPush = (fromUserSessionToken, toUser, callback) ->
   
   db.User.find({
     where: {
@@ -24,7 +24,7 @@ _sendPush = (fromUserSessionToken, toUser, callback) ->
         
       push.sendMessage fromUser, gcmIDs, callback
 
-module.exports = (req, res, next) ->
+exports.moin = (req, res, next) ->
   
   # uid
   to = req.body?.to
