@@ -7,6 +7,15 @@ server = null
 ###
 exports.init = ->
   server = restify.createServer()
+  # enable throttling
+  server.use restify.throttle {
+    # requests per second
+    rate: 1,
+    burst: 2,
+    ip: true
+  }
+  
+  # make body requests possible
   server.use restify.bodyParser()
   
   exports._initRoutes server
