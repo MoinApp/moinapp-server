@@ -31,7 +31,7 @@ User = sequelize.define 'User', {
     getPublicModel: ->
       {
         id: this.uid,
-        name: this.username
+        username: this.username
       }
   }
 }
