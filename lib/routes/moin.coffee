@@ -1,3 +1,4 @@
+restify = require 'restify'
 db = require '../db/'
 push = require '../push'
 
@@ -42,10 +43,7 @@ module.exports = (req, res, next) ->
       return next err if !!err
       
       if !user
-        res.send 400, {
-          status: -1,
-          error: 'User does not exist.'
-        }
+        next new restify.ResourceNotFoundError 'User does not exist.'
       else
       
         # TODO: MOIN him!
