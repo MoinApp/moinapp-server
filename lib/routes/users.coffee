@@ -1,3 +1,4 @@
+restify = require 'restify'
 db = require '../db/'
 session = require './session'
 
@@ -32,7 +33,7 @@ exports.newUser = (req, res, next) ->
     if !!err return next err
     
     if !!user
-      res.send 400, { status: -1, error: 'Username is already taken.' }
+      next new restify.RestError 'Username is already taken.'
     else
       
       db.User.createUser({
