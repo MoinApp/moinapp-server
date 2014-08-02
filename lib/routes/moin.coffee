@@ -21,7 +21,8 @@ exports._sendPush = (fromUserSessionToken, toUser, callback) ->
         return callback new Error 'No device registered.'
         
       gcmIDs = ( gcmId.getPublicModel() for gcmId in gcmIDs )
-        
+      
+      console.log "Sending moin from #{fromUser.username} to #{toUser.username}..."
       push.sendMessage fromUser, gcmIDs, callback
 
 exports.moin = (req, res, next) ->

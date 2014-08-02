@@ -22,5 +22,5 @@ exports.sendMessage = (sendingUser, toGCMIDs, callback) ->
   
   numberOfRetries = 1
   
-  console.log "Sending message from #{sendingUser.username} to" , toGCMIDs, "..."
+  #console.log "Sending message from #{sendingUser.username} to" , toGCMIDs, "..."
   gcmSender?.send message, toGCMIDs, numberOfRetries, callback
