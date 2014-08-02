@@ -1,4 +1,4 @@
-crypot = require 'crypto'
+crypto = require 'crypto'
 
 exports.getMD5 = (text) ->
   md5 = crypto.createHash 'md5'
