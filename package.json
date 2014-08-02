@@ -5,6 +5,7 @@
   "main": "lib/index.js",
   "dependencies": {
     "coffee-script": "^1.7.1",
+    "node-gcm": "^0.9.12",
     "node-uuid": "^1.4.1",
     "restify": "^2.8.1",
     "sequelize": "^1.7.9",
