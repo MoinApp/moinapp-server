@@ -117,4 +117,6 @@ exports.addGCMId = (req, res, next) ->
           }
           
           next()
+    else
+      next new restify.InvalidCredentialsError 'User could not be found for session.'
         
