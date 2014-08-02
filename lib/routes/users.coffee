@@ -104,9 +104,7 @@ exports.addGCMId = (req, res, next) ->
     
     if !!user
       db.gcmID.findOrCreate({
-        where: {
-          uid: gcmIdString
-        }
+        uid: gcmIdString
       }).complete (err, gcmId, created) ->
         return next err if !!err
         
