@@ -13,8 +13,12 @@ if cluster.isMaster
   
   cluster.on 'exit', (worker, code, signal) ->
     console.log "Worker #{worker} died with signal #{signal}."
-    startFork()
-    console.log "Reforked."
+    
+    if signal == null
+      console.log "Expecting syntax error. Stopping."
+    else
+      startFork()
+      console.log "Reforked."
   # fork 1 for now
   startFork()
 
