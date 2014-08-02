@@ -1,5 +1,6 @@
 restify = require 'restify'
 users = require './routes/users'
+session = require './routes/session'
 
 server = null
 ###
@@ -24,11 +25,18 @@ exports.init = ->
   
 exports._initRoutes = (server) ->
   
+  # Routes without login
+  
+  server.post '/user', users.newUser
+  server.post '/user/session', users.signIn
+  
+  # Routes that require a login
+  
+  server.use session.requireLogin
+  
   server.post '/moin', require './routes/moin'
   # Users
   server.get '/user/:username', users.getUser
-  server.post '/user', users.newUser
-  server.post '/user/session', users.signIn
 
 ###
 # RUN

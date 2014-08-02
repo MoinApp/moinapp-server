@@ -1,6 +1,17 @@
 uuid = require 'node-uuid'
 db = require '../db/'
 
+exports.requireLogin = (req, res, next) ->
+  session = req.query?.session
+  
+  if !session
+    res.send 403, {
+      status: -1,
+      error: 'Requires authentication.'
+    }
+  else
+    next()
+
 exports.getSession = (username, callback) ->
   
   db.User.find({
