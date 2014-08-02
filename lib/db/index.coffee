@@ -16,7 +16,9 @@ sequelize = new Sequelize dbConfig.name, dbConfig.username, dbConfig.password, {
 User = sequelize.define 'User', {
   uid: Sequelize.STRING,
   username: Sequelize.STRING,
-  password: Sequelize.STRING
+  password: Sequelize.STRING,
+  
+  session: Sequelize.STRING
 }, {
   classMethods: {
     createUser: (username, password) ->
