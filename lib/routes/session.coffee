@@ -17,7 +17,7 @@ exports.getSession = (username, callback) ->
       username: username
     }
   }).complete (err, user) ->
-    if !!err return next err
+    return next err if !!err
     
     if !user
       callback new Error('User not found.')
@@ -31,7 +31,7 @@ exports.createSession = (username, callback) ->
       username: username
     }
   }).complete (err, user) ->
-    if !!err return next err
+    return next err if !!err
     
     if !user
       callback new Error('User not found.')
@@ -41,14 +41,14 @@ exports.createSession = (username, callback) ->
       user.session = uid
       
       user.save().complete (err) ->
-        if !!err return next err
+        return next err if !!err
         
         callback null, uid
   
 exports.getOrCreateSession = (username, callback) ->
   
   exports.getSession username, (err, sessionToken) ->
-    if !!err return next err
+    return next err if !!err
     
     if sessionToken
       callback null, sessionToken

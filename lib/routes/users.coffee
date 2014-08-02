@@ -11,7 +11,7 @@ exports.getUser = (req, res, next) ->
       username: username
     }
   }).complete (err, user) ->
-    if !!err return next err
+    return next err if !!err
     
     if !user
       res.send 404, {}
@@ -30,7 +30,7 @@ exports.newUser = (req, res, next) ->
       username: username
     }
   }).complete (err, user) ->
-    if !!err return next err
+    return next err if !!err
     
     if !!user
       next new restify.RestError 'Username is already taken.'
@@ -40,10 +40,10 @@ exports.newUser = (req, res, next) ->
         username: username,
         password: password
       }).complete (err, user) ->
-        if !!err return next err
+        return next err if !!err
         
         session.createSession user.username, (err, sessionToken) ->
-          if !!err return next err
+          return next err if !!err
           
           res.send {
             status: 0,
@@ -63,7 +63,7 @@ exports.signIn = (req, res, next) ->
       password: password
     }
   }).complete (err, user) ->
-    if !!err return next err
+    return next err if !!err
     
     if !user
       res.send 400, {
@@ -73,7 +73,7 @@ exports.signIn = (req, res, next) ->
       next()
     else
       session.getOrCreateSession username, (err, sessionToken) ->
-        if !!err return next err
+        return next err if !!err
         
         res.send 200, {
           status: 0,
@@ -92,16 +92,16 @@ exports.addGCMId = (req, res, next) ->
       session: sessionToken
     }
   }).complete (err, user) ->
-    if !!err return next err
+    return next err if !!err
     
     if !!user
       db.gcmID.create({
         uid: gcmIdString
       }).complete (err, gcmId) ->
-        if !!err return next err
+        return next err if !!err
         
         user.addGcmID(gcmId).complete (err) ->
-          if !!err return next err
+          return next err if !!err
           
           res.send 200, {
             status: 0,

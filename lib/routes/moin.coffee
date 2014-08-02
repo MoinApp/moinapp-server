@@ -39,7 +39,7 @@ module.exports = (req, res, next) ->
         uid: to
       }
     }).complete (err, user) ->
-      if !!err return next err
+      return next err if !!err
       
       if !user
         res.send 400, {
