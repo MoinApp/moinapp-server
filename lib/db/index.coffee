@@ -9,13 +9,12 @@ dbConfig = {
 sequelize = new Sequelize dbConfig.name, dbConfig.username, dbConfig.password, {
   dialect: 'sqlite',
   storage: dbConfig.name,
-  logging: true # for now
+  logging: console.log # for now
 }
 
 User = sequelize.define 'User', {
   username: Sequelize.STRING,
-  password: Sequelize.STRING,
-  gcmIDS:
+  password: Sequelize.STRING
 }
 
 GCM_ID = sequelize.define 'GCM_ID', {
