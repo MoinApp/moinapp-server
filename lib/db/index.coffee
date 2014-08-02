@@ -23,7 +23,7 @@ User = sequelize.define 'User', {
   classMethods: {
     createUser: (properties) ->
       console.log 'createUser:', properties
-      uid = uuid.v4()
+      properties.uid = uuid.v4()
       
       User.create(properties)
   },
