@@ -8,13 +8,13 @@ _sendPush = (fromUserSessionToken, toUser, callback) ->
       session: fromUserSessionToken
     }
   }).complete (err, fromUser) ->
-    throw err if err
+    callback err
     
     if !fromUser
       return callback new Error 'Sending user not found.'
       
     toUser.getGcmIDs().complete (err, gcmIDs) ->
-      throw err if err
+      callback err
       
       if !gcmIDs
         return callback new Error 'No device registered.'
@@ -39,7 +39,7 @@ module.exports = (req, res, next) ->
         uid: to
       }
     }).complete (err, user) ->
-      throw err if err
+      return next err
       
       if !user
         res.send 400, {
