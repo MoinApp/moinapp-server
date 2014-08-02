@@ -1,6 +1,7 @@
 restify = require 'restify'
 db = require '../db/'
 session = require './session'
+crypt = require '../db/crypt'
 
 exports.getUser = (req, res, next) ->
   
@@ -24,6 +25,7 @@ exports.newUser = (req, res, next) ->
   
   username = req.body?.username
   password = req.body?.password
+  email = req.body?.email
   
   db.User.find({
     where: {
@@ -38,7 +40,8 @@ exports.newUser = (req, res, next) ->
       
       db.User.createUser({
         username: username,
-        password: password
+        password: password,
+        emailHash: crypt.getMD5 email
       }).complete (err, user) ->
         return next err if !!err
         

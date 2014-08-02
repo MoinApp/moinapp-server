@@ -17,6 +17,7 @@ User = sequelize.define 'User', {
   uid: Sequelize.STRING,
   username: Sequelize.STRING,
   password: Sequelize.STRING,
+  emailHash: Sequelize.STRING, # md5
   
   session: Sequelize.STRING
 }, {
@@ -31,7 +32,8 @@ User = sequelize.define 'User', {
     getPublicModel: ->
       {
         id: this.uid,
-        username: this.username
+        username: this.username,
+        email_hash: this.emailHash
       }
   }
 }
