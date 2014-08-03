@@ -44,6 +44,15 @@ exports.createSession = (username, callback) ->
         return next err if !!err
         
         callback null, uid
+        
+exports.validateSession = (session, callback) ->
+  db.User.find({
+    where: {
+      session: session
+    }
+  }).complete (err, user) ->
+    # ok if user exists aka some user has this session
+    callback err, !!user
   
 exports.getOrCreateSession = (username, callback) ->
   

@@ -123,3 +123,22 @@ exports.addGCMId = (req, res, next) ->
     else
       next new restify.InvalidCredentialsError 'User could not be found for session.'
         
+exports.validateSession = (req, res, next) ->
+  
+  sessionToken = req.body?.session
+  
+  session.validateSession sessionToken, (err, ok) ->
+    throw err if !!err
+    
+    if ok
+      res.send 200, {
+        status: 0,
+        message: "Session valid."
+      }
+    else
+      res.send 400, {
+        status: -1,
+        message: "Invalid session."
+      }
+      
+    next()

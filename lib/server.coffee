@@ -36,6 +36,7 @@ exports._initRoutes = (server) ->
   
   server.post '/user', users.newUser
   server.post '/user/session', users.signIn
+  server.post '/user/session/validate', users.validateSession
   
   # Routes that require a login
   
