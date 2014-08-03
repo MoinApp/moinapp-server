@@ -7,8 +7,12 @@ exports._checkInit = ->
     apiKey = process.env.GCM_API_KEY
     
     if !apiKey
-      throw new Error 'GCM_API_KEY not found.'
-    exports._init apiKey
+      if process.env.NODE_ENV == 'production'
+        throw new Error 'GCM_API_KEY not found.'
+      else
+        console.warn 'GCM_API_KEY not found.'
+    else
+      exports._init apiKey
     
 exports._init = (apiKey) ->
   gcmSender = new gcm.Sender apiKey
