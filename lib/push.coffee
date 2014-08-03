@@ -14,6 +14,11 @@ exports._init = (apiKey) ->
   gcmSender = new gcm.Sender apiKey
 
 exports.sendMessage = (sendingUser, toGCMIDs, callback) ->
+  if !sendingUser?.getPublicModel?
+    return callback new Error 'Must provide database object for sending user.'
+  if toGCMIDs.length == 0
+    return callback new Error 'No receiver GCM IDs given.'
+  
   exports._checkInit()
   
   message = new gcm.Message()
