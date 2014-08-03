@@ -1,8 +1,14 @@
 crypto = require 'crypto'
 
+exports._getHash = (hash, text) ->
+  hash = crypto.createHash hash
+  
+  hash.update text
+  
+  hash.digest 'hex'
+
 exports.getMD5 = (text) ->
-  md5 = crypto.createHash 'md5'
-  
-  md5.update text
-  
-  md5.digest 'hex'
+  exports._getHash 'md5', text
+
+exports.getSHA256 = (text) ->
+  exports._getHash 'sha256', text

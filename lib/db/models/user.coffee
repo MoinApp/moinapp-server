@@ -1,15 +1,16 @@
 Sequelize = require 'sequelize'
 uuid = require 'node-uuid'
+crypt = require '../crypt'
 
 module.exports = (sequelize) ->
   
   User = sequelize.define 'User', {
-    uid: Sequelize.STRING,
+    uid: Sequelize.STRING, # uuid v4
     username: Sequelize.STRING,
-    password: Sequelize.STRING,
+    password: Sequelize.STRING, # sha256
     emailHash: Sequelize.STRING, # md5
     
-    session: Sequelize.STRING
+    session: Sequelize.STRING # uuid v1
   }, {
     classMethods: {
       createUser: (properties) ->
