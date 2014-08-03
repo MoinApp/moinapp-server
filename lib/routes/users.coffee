@@ -45,8 +45,8 @@ exports.newUser = (req, res, next) ->
       
       db.User.createUser({
         username: username,
-        password: crypt.getSHA256 password,
-        emailHash: crypt.getMD5 email
+        password: crypt.getSHA256(password),
+        emailHash: crypt.getMD5(email)
       }).complete (err, user) ->
         return next err if !!err
         
