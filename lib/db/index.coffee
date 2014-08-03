@@ -36,16 +36,18 @@ User.hasMany gcmID
 
 if !isHeroku()
   sequelize.sync({ force:true }).success () ->
-      User.createUser({
-        username: 'sgade',
-        password: 'test',
-        emailHash: '1de9ab0eb9b23a2da38f6857de628625'
-      }).complete (err, user) ->
-        
-        gcmID.create({
-          uid: 'blub'
-        }).complete (err, gcmId) ->
-          user.addGcmID gcmId
+    crypt = require './crypt'
+    
+    # create dummy user
+    User.createUser({
+      username: 'sgade',
+      password: crypt.getSHA256('test'),
+      emailHash: '1de9ab0eb9b23a2da38f6857de628625'
+    }).complete (err, user) ->
+      gcmID.create({
+        uid: 'blub'
+      }).complete (err, gcmId) ->
+        user.addGcmID gcmId
 else
   sequelize.sync().complete (err) ->
     if !!err
