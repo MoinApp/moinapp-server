@@ -13,7 +13,6 @@ module.exports = (sequelize) ->
   }, {
     classMethods: {
       createUser: (properties) ->
-        console.log 'createUser:', properties
         properties.uid = uuid.v4()
         
         User.create(properties)
