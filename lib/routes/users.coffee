@@ -2,6 +2,18 @@ restify = require 'restify'
 db = require '../db/'
 session = require './session'
 crypt = require '../db/crypt'
+util = require 'util'
+
+class UsernameTakenError extends restify.RestError
+  constructor: (@message) ->
+    restify.RestError.call this, {
+      restCode: 'UsernameTakenError',
+      statusCode: 409,
+      message: message,
+      constructorOpt: UsernameTakenError
+    }
+    @name = 'UsernameTakenError'
+  
 
 exports.getUser = (req, res, next) ->
   
@@ -35,7 +47,7 @@ exports.newUser = (req, res, next) ->
     return next err if !!err
     
     if !!user
-      next new restify.RestError 'Username is already taken.'
+      next new UsernameTakenError 'Username is already taken.'
     else
       
       if username.length < 3
@@ -54,7 +66,7 @@ exports.newUser = (req, res, next) ->
           return next err if !!err
           
           res.send {
-            status: 0,
+            code: "Success",
             session: sessionToken
           }
           
