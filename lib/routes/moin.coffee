@@ -54,6 +54,6 @@ exports.moin = (req, res, next) ->
           console.log "Result from gcm send:", results
           
           res.send 200, {
-            status: 0,
+            code: "Success",
             message: "Moin sent."
           }
