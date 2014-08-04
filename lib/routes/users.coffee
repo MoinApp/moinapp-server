@@ -23,6 +23,16 @@ class PasswordTooShortError extends restify.RestError
       constructorOpt: PasswordTooShortError
     }
     @name = 'PasswordTooShortError'
+    
+class UsernameTooShortError extends restify.RestError
+  constructor: (@message) ->
+    restify.RestError.call this, {
+      restCode: 'UsernameTooShort',
+      statusCode: 400,
+      message: message,
+      constructorOpt: UsernameTooShortError
+    }
+    @name = 'UsernameTooShortError'
   
 
 exports.getUser = (req, res, next) ->
@@ -61,7 +71,7 @@ exports.newUser = (req, res, next) ->
     else
       
       if username.length < 3
-        return next new restify.InvalidArgumentError 'Username is too short.'
+        return next new UsernameTooShortError 'Username is too short.'
       if password.length < 5
         return next new PasswordTooShortError 'Password is too short.'
       
