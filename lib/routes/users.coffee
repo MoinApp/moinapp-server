@@ -7,7 +7,7 @@ util = require 'util'
 class UsernameTakenError extends restify.RestError
   constructor: (@message) ->
     restify.RestError.call this, {
-      restCode: 'UsernameTakenError',
+      restCode: 'UsernameTaken',
       statusCode: 409,
       message: message,
       constructorOpt: UsernameTakenError
