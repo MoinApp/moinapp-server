@@ -32,8 +32,8 @@ exports.moin = (req, res, next) ->
   
   if !to
     res.send 400, {
-      status: -1,
-      error: "Specify id."
+      code: "IdMissing",
+      message: "Specify id."
     }
   else
     db.User.find({
