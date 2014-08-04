@@ -115,7 +115,7 @@ exports.addGCMId = (req, res, next) ->
           return next err if !!err
           
           res.send 200, {
-            status: 0,
+            code: "GCMIDAdded",
             message: "GcmID added."
           }
           
