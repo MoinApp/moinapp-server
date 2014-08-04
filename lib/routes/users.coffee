@@ -75,8 +75,8 @@ exports.signIn = (req, res, next) ->
     
     if !user
       res.send 400, {
-        status: -1,
-        error: 'Username or Password is wrong.'
+        code: "CredentialsWrong",
+        message: 'Username or Password is wrong.'
       }
       next()
     else
@@ -84,7 +84,7 @@ exports.signIn = (req, res, next) ->
         return next err if !!err
         
         res.send 200, {
-          status: 0,
+          code: "Success",
           session: sessionToken
         }
         
