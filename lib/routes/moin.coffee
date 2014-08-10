@@ -53,7 +53,10 @@ exports.moin = (req, res, next) ->
           
           console.log "Result from gcm send:", results
           
-          res.send 200, {
-            status: 0,
-            message: "Moin sent."
-          }
+          if results.success == 0
+            next new restify.InternalError "No GCM message could be sent successfully. ( #{results.failure} failure(s) )"
+          else
+            res.send 200, {
+              status: 0,
+              message: "Moin sent."
+            }
