@@ -2,6 +2,38 @@ restify = require 'restify'
 db = require '../db/'
 session = require './session'
 crypt = require '../db/crypt'
+util = require 'util'
+
+class UsernameTakenError extends restify.RestError
+  constructor: (@message) ->
+    restify.RestError.call this, {
+      restCode: 'UsernameTaken',
+      statusCode: 409,
+      message: message,
+      constructorOpt: UsernameTakenError
+    }
+    @name = 'UsernameTakenError'
+    
+class PasswordTooShortError extends restify.RestError
+  constructor: (@message) ->
+    restify.RestError.call this, {
+      restCode: 'PasswordTooShort',
+      statusCode: 400,
+      message: message,
+      constructorOpt: PasswordTooShortError
+    }
+    @name = 'PasswordTooShortError'
+    
+class UsernameTooShortError extends restify.RestError
+  constructor: (@message) ->
+    restify.RestError.call this, {
+      restCode: 'UsernameTooShort',
+      statusCode: 400,
+      message: message,
+      constructorOpt: UsernameTooShortError
+    }
+    @name = 'UsernameTooShortError'
+  
 
 exports.getUser = (req, res, next) ->
   
@@ -35,13 +67,13 @@ exports.newUser = (req, res, next) ->
     return next err if !!err
     
     if !!user
-      next new restify.RestError 'Username is already taken.'
+      next new UsernameTakenError 'Username is already taken.'
     else
       
       if username.length < 3
-        return next new restify.InvalidArgumentError 'Username is too short.'
+        return next new UsernameTooShortError 'Username is too short.'
       if password.length < 5
-        return next new restify.InvalidArgumentError 'Password is too short.'
+        return next new PasswordTooShortError 'Password is too short.'
       
       db.User.createUser({
         username: username,
@@ -54,7 +86,7 @@ exports.newUser = (req, res, next) ->
           return next err if !!err
           
           res.send {
-            status: 0,
+            code: "Success",
             session: sessionToken
           }
           
@@ -75,8 +107,8 @@ exports.signIn = (req, res, next) ->
     
     if !user
       res.send 400, {
-        status: -1,
-        error: 'Username or Password is wrong.'
+        code: "CredentialsWrong",
+        message: 'Username or Password is wrong.'
       }
       next()
     else
@@ -84,7 +116,7 @@ exports.signIn = (req, res, next) ->
         return next err if !!err
         
         res.send 200, {
-          status: 0,
+          code: "Success",
           session: sessionToken
         }
         
@@ -115,7 +147,7 @@ exports.addGCMId = (req, res, next) ->
           return next err if !!err
           
           res.send 200, {
-            status: 0,
+            code: "GCMIDAdded",
             message: "GcmID added."
           }
           
