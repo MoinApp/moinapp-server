@@ -4,6 +4,16 @@ session = require './session'
 crypt = require '../db/crypt'
 util = require 'util'
 
+class UsernameNotFoundError extends restify.RestError
+  constructor: (@message) ->
+    restify.RestError.call this, {
+      restCode: 'UsernameNotFound',
+      statusCode: 404,
+      message: message,
+      constructorOpt: UsernameNotFoundError
+    }
+    @name = 'UsernameNotFoundError'
+    
 class UsernameTakenError extends restify.RestError
   constructor: (@message) ->
     restify.RestError.call this, {
@@ -47,11 +57,20 @@ exports.getUser = (req, res, next) ->
     return next err if !!err
     
     if !user
-      res.send 404, {}
+      # find similar users
+      db.User.find({
+        where: [ "'username' LIKE ?", '%' + username + '%' ]
+      }).complete (err, user) ->
+        return next err if !!err
+        
+        if !!user
+          next new UsernameNotFoundError "Did you mean \"#{user.username}\"?"
+        else
+          next new UsernameNotFoundError "Username does not exist."
     else
       res.send user.getPublicModel()
       
-    next()
+      next()
 
 exports.newUser = (req, res, next) ->
   
