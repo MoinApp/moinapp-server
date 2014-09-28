@@ -5,8 +5,14 @@ crypt = require '../crypt'
 module.exports = (sequelize) ->
   
   User = sequelize.define 'User', {
-    uid: Sequelize.STRING, # uuid v4
-    username: Sequelize.STRING,
+    uid: {
+      type: Sequelize.STRING, # uuid v4
+      unique: true
+    },
+    username: {
+      type: Sequelize.STRING,
+      unique: true
+    },
     password: Sequelize.STRING, # sha256
     emailHash: Sequelize.STRING, # md5
     

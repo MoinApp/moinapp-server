@@ -5,6 +5,7 @@ module.exports = (sequelize) ->
   gcmID = sequelize.define 'gcmID', {
     uid: {
       type: Sequelize.STRING,
+      unique: true,
       validate: {
         notEmpty: true
       }
