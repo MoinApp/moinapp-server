@@ -42,7 +42,11 @@ exports._initRoutes = (server) ->
   
   server.use session.requireLogin
   
-  server.post '/moin', moin.moin
+  server.post '/moin', restify.throttle {
+    rate: 1/5,
+    burst: 1/5,
+    ip: true
+  }, moin.moin
   # Users
   server.get '/user/:username', users.getUser
   server.post '/user/gcm', users.addGCMId
