@@ -31,17 +31,19 @@ else
 
 
 User = require('./models/user') sequelize
+Session = require('./models/session') sequelize
 gcmID = require('./models/gcmID') sequelize
 User.hasMany gcmID
+User.hasMany Session
 
 if !isHeroku()
   sequelize.sync({ force:true }).success () ->
     crypt = require './crypt'
     
     # create dummy user
-    User.createUser({
+    User.createUserAndEncryptPassword({
       username: 'sgade',
-      password: crypt.getSHA256('test'),
+      password: 'test',
       emailHash: '1de9ab0eb9b23a2da38f6857de628625'
     }).complete (err, user) ->
       gcmID.create({
@@ -58,5 +60,6 @@ module.exports = {
   sequelize: sequelize,
   
   User: User,
+  Session: Session,
   gcmID: gcmID
 }

@@ -19,8 +19,10 @@ module.exports = (sequelize) ->
     session: Sequelize.STRING # uuid v1
   }, {
     classMethods: {
-      createUser: (properties) ->
+      createUserAndEncryptPassword: (properties) ->
         properties.uid = uuid.v4()
+        if properties.password
+          properties.password = crypt.getSHA256 properties.password
         
         User.create(properties)
     },
@@ -31,6 +33,8 @@ module.exports = (sequelize) ->
           username: this.username,
           email_hash: this.emailHash
         }
+      isValidPassword: (password) ->
+        @password == crypt.getSHA256 password
     }
   }
   
