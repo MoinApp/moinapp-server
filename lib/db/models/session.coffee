@@ -17,7 +17,7 @@ module.exports = (sequelize) ->
           application: appID
         }
         
-        Session.create properties
+        Session.findOrCreate properties
     },
     instanceMethods: {
       getPublicModel: ->
