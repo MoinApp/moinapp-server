@@ -24,6 +24,14 @@ class GCMPush
       message.addDataWithKeyValue 'moin-uuid', uuid.v1()
       
       numberOfRetries = 1
-      gcmSender?.send message, gcmIDs, numberOfRetries, callback
+      @gcmSender.send message, gcmIDs, numberOfRetries, (err, results) ->
+        return callback? err if !!err
+        
+        if results.success < 1
+          text = results.results[0]?.error
+          err = new Error "Failed to send GCM push. (\"#{text}\")"
+          return callback? err
+        
+        callback? err, results
 
 module.exports.GCMPush = GCMPush
