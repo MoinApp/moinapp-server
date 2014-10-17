@@ -39,7 +39,7 @@ class MoinWebServer
     @server.post '/api/signup', routes.session.POSTsignup
     # Authorized methods
     @server.post '/api/moin', routes.session.checkAuthentication, routes.moin.POSTmoin
-    
+    @server.post '/api/user/addgcm', routes.session.checkAuthentication, routes.user.POSTaddGcm
     @server.get '/api/user/:username', routes.session.checkAuthentication, routes.user.GETuser
   
   start: (port) ->
