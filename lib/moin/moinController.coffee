@@ -11,11 +11,13 @@ class MoinController
   setUsersFromNames: (senderName, receipientName, callback) ->
     @_resolveUser senderName, (err, sender) =>
       return callback err if !!err
+      return callback new Error 'User "' + senderName + '" not found.' if !sender
       
       @sender = sender
       
       @_resolveUser receipientName, (err, receipient) =>
         return callback err if !!err
+        return callback new Error 'User "' + receipientName + '" not found.' if !receipient
         
         @receipient = receipient
         
