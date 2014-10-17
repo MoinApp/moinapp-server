@@ -34,7 +34,9 @@ User = require('./models/user') sequelize
 Session = require('./models/session') sequelize
 gcmID = require('./models/gcmID') sequelize
 User.hasMany gcmID
+gcmID.belongsTo User
 User.hasMany Session
+Session.belongsTo User
 
 if !isHeroku()
   sequelize.sync({ force:true }).success () ->
