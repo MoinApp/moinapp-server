@@ -11,12 +11,12 @@ class GCMPush
     if !receipient?.getPublicModel?
       return callback new Error 'Must provide database object for "receipient".'
     
-    user.getGcmIDs().complete (err, gcmIDs) ->
+    receipient.getGcmIDs().complete (err, gcmIDs) =>
       return callback err if !!err
       return callback new Error 'No device registered for this user.' if !gcmIDs
         
       # convert into public model
-      gcmIDs ( gcmID.getPublicModel() for gcmID in gcmIDs )
+      gcmIDs = ( gcmID.getPublicModel() for gcmID in gcmIDs )
     
       # now that we have the devices' push tokens
       message = new gcm.Message()
