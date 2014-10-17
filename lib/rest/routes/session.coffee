@@ -4,23 +4,27 @@ db = require './../../db/'
 class SessionHandler
   @instance = null
   @getInstance = ->
-    if !@instance
-      @instance = new SessionHandler
-    @instance
+    if !SessionHandler.instance
+      SessionHandler.instance = new SessionHandler
+    SessionHandler.instance
   
   constructor: ->
     
-  checkSessionToken: (token) ->
-    !!token
+  checkSessionToken: (token, callback) ->
+    callback? !!token
     
 exports.checkAuthentication = (req, res, next) ->
   
   sessionToken = req.query?.session
   
-  if SessionHandler.getInstance().checkSessionToken sessionToken
-    next()
-  else
+  if !sessionToken
     next new restify.NotAuthorizedError 'Requires session token.'
+  else
+    SessionHandler.getInstance().checkSessionToken sessionToken, (tokenOk) ->
+      if !!tokenOk
+        next()
+      else
+        next new restify.NotAuthorizedError 'Invalid session token.'
   
 exports.POSTsignin = (req, res, next) ->
   
@@ -43,7 +47,7 @@ exports.POSTsignin = (req, res, next) ->
     else
       
       if !user.isValidPassword password
-        return new restify.InvalidCredentialsError 'Invalid password.'
+        return next new restify.InvalidCredentialsError 'Invalid password.'
         
       db.Session.createNew(app).complete (err, session) ->
         return next err if !!err
@@ -52,6 +56,12 @@ exports.POSTsignin = (req, res, next) ->
         
         req.session = session
         req.user = user
+        
+        res.send 200, {
+          code: "Success",
+          message: session.getPublicModel()
+        }
+        res.end()
         
         next()
 
