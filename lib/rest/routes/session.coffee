@@ -10,21 +10,37 @@ class SessionHandler
   
   constructor: ->
     
-  checkSessionToken: (token, callback) ->
-    callback? !!token
+  getUserForSessionToken: (token, callback) ->
+    db.Session.find({
+      where: {
+        uid: token
+      }
+    }).complete (err, session) ->
+      return callback err if !!err
+      
+      console.log "session:", session
+      if !session
+        callback new restify.NotAuthorizedError 'Invalid session token.'
+      else
+        session.getUser().complete callback
     
 exports.checkAuthentication = (req, res, next) ->
   
-  sessionToken = req.query?.session
-  
-  if !sessionToken
-    next new restify.NotAuthorizedError 'Requires session token.'
+  user = req.user
+  if !!user
+    next()
   else
-    SessionHandler.getInstance().checkSessionToken sessionToken, (tokenOk) ->
-      if !!tokenOk
+    sessionToken = req.query?.session
+  
+    if !sessionToken
+      next new restify.NotAuthorizedError 'Requires session token.'
+    else
+      SessionHandler.getInstance().getUserForSessionToken sessionToken, (err, user) ->
+        return next err if !!err
+        
+        req.user = user
+        
         next()
-      else
-        next new restify.NotAuthorizedError 'Invalid session token.'
   
 exports.POSTsignin = (req, res, next) ->
   
@@ -54,14 +70,12 @@ exports.POSTsignin = (req, res, next) ->
         
         user.addSession session
         
-        req.session = session
         req.user = user
         
         res.send 200, {
           code: "Success",
           message: session.getPublicModel()
         }
-        res.end()
         
         next()
 
@@ -97,7 +111,6 @@ exports.POSTsignup = (req, res, next) ->
           return next err if !!err
           
           user.addSession session
-          req.session = session
           req.user = user
         
           next()
