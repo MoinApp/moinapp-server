@@ -29,7 +29,7 @@ class MoinController
     }).complete callback
         
   sendMoin: (callback) ->
-    @androidPush @sender, @receipient, callback
+    @androidPush.send @sender, @receipient, callback
     # TODO: add iOS
 
 module.exports.MoinController = MoinController
