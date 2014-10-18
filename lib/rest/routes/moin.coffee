@@ -11,5 +11,10 @@ exports.POSTmoin = (req, res, next) ->
     return next err if !!err
     
     # done setting the user objects
-    moin.sendMoin (err) ->
-      next err
+    moin.sendMoin (err, warnings) ->
+      return next err if !!err
+      
+      res.send 200, {
+        code: "Success",
+        message: warnings
+      }

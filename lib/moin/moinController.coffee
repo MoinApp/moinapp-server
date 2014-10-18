@@ -31,7 +31,34 @@ class MoinController
     }).complete callback
         
   sendMoin: (callback) ->
-    @androidPush.send @sender, @receipient, callback
+    warnings = []
+    minimumSuccessCount = 2
+    
+    @androidPush.send @sender, @receipient, (err, results) ->
+      # do not crash because we want to send other notifications, too!
+      if !!err
+        minimumSuccessCount--
+        warnings.push {
+          type: "android",
+          error: err.message
+        }
+      
+      iOSPush = (a, b, cb) ->
+        cb? new Error 'Not implemented.'
+        
+      iOSPush @sender, @receipient, (err, results) ->
+        if !!err
+          minimumSuccessCount--
+          warnings.push {
+            type: "iOS",
+            error: err.message
+          }
+        
+        err = null
+        if minimumSuccessCount <= 0
+          err = new Error 'No Push succeeded.'
+          console.log "Invalid push:", warnings
+        callback? err, warnings
     # TODO: add iOS
 
 module.exports.MoinController = MoinController
