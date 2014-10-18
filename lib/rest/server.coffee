@@ -8,7 +8,7 @@ Server Config
 defaultThrottle = restify.throttle {
   # requests per seconds
   rate: 1
-  burst: 2
+  burst: 3
   ip: true
 }
 
