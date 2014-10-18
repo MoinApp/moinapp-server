@@ -6,7 +6,7 @@ routes = require './routes'
 Server Config
 ###
 defaultThrottle = restify.throttle {
-  # requests per seconds
+  # requests per second
   rate: 1
   burst: 3
   ip: true
@@ -23,23 +23,27 @@ class MoinWebServer
     @configureServer moinController
     
   configureServer: (moinController) ->
-    @server.use defaultThrottle
-    
     # MIDDLEWARE #
     # only accept requests we can respond to
     @server.use restify.acceptParser(@server.acceptable)
+    # sync date
+    @server.use restify.dateParser()
+    # enable body requests
+    @server.use restify.bodyParser()
+    # enable query parameters
+    @server.use restify.queryParser()
+    # sanitize paths
+    @server.use restify.pre.sanitizePath()
+    # should enable logging. Does not do anything?
+    @server.use restify.requestLogger()
     # enable GZIP responses
     @server.use restify.gzipResponse()
     # Add all headers to the response
     @server.use restify.fullResponse()
-    # enable query parameters
-    @server.use restify.queryParser()
-    # enable body requests
-    @server.use restify.bodyParser()
-    # should enable logging. Does not do anything?
-    @server.use restify.requestLogger()
     
     # ROUTES #
+    @server.use defaultThrottle
+    
     # These routes require not login
     @server.get '/', routes.index.GETindex
     
