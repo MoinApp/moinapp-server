@@ -46,7 +46,7 @@ if !isHeroku()
     User.createUserAndEncryptPassword({
       username: 'sgade',
       password: 'test',
-      emailHash: '1de9ab0eb9b23a2da38f6857de628625'
+      email: 'a.b@c.d'
     }).complete (err, user) ->
       gcmID.create({
         uid: 'blub'

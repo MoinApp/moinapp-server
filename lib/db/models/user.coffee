@@ -14,15 +14,16 @@ module.exports = (sequelize) ->
       unique: true
     },
     password: Sequelize.STRING, # sha256
-    emailHash: Sequelize.STRING, # md5
-    
-    session: Sequelize.STRING # uuid v1
+    emailHash: Sequelize.STRING # md5
   }, {
     classMethods: {
       createUserAndEncryptPassword: (properties) ->
         properties.uid = uuid.v4()
-        if properties.password
+        if !!properties.password
           properties.password = crypt.getSHA256 properties.password
+        if !!properties.email
+          properties.emailHash = crypt.getMD5 properties.email
+          delete properties.email
         
         User.create(properties)
     },

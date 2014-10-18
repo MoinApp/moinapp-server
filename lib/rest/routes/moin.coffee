@@ -16,3 +16,4 @@ exports.POSTmoin = (req, res, next) ->
         code: "Success",
         message: warnings
       }
+      next()

@@ -69,8 +69,6 @@ exports.POSTsignin = (req, res, next) ->
         
         user.addSession session
         
-        req.user = user
-        
         res.send 200, {
           code: "Success",
           message: session.getPublicModel()
@@ -83,7 +81,7 @@ exports.POSTsignup = (req, res, next) ->
   username = req.body?.username
   password = req.body?.password
   app = req.body?.application
-  # optional
+  # optional, but clients should send this
   email = req.body?.email
   
   if !username || !password || !app
@@ -110,7 +108,6 @@ exports.POSTsignup = (req, res, next) ->
           return next err if !!err
           
           user.addSession session
-          req.user = user
         
           res.send 200, {
             code: "Success",
