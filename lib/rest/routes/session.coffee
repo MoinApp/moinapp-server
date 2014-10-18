@@ -18,7 +18,6 @@ class SessionHandler
     }).complete (err, session) ->
       return callback err if !!err
       
-      console.log "session:", session
       if !session
         callback new restify.NotAuthorizedError 'Invalid session token.'
       else
