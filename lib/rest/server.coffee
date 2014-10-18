@@ -7,8 +7,15 @@ Server Config
 ###
 defaultThrottle = restify.throttle {
   # requests per second
-  rate: 1
-  burst: 3
+  rate: 2
+  burst: 5
+  ip: true
+}
+moinThrottle = restify.throttle {
+  # requests per second
+  # should be 1 / 5 but does not seem to allow any requests at all then
+  rate: 1,
+  burst: 1,
   ip: true
 }
 
@@ -51,9 +58,9 @@ class MoinWebServer
     @server.post '/api/auth', routes.session.POSTsignin
     @server.post '/api/signup', routes.session.POSTsignup
     # Authorized methods
-    @server.post '/api/moin', routes.session.checkAuthentication, moinMiddleware(moinController), routes.moin.POSTmoin
-    @server.post '/api/user/addgcm', routes.session.checkAuthentication, routes.user.POSTaddGcm
+    @server.post '/api/moin', moinThrottle, routes.session.checkAuthentication, moinMiddleware(moinController), routes.moin.POSTmoin
     @server.get '/api/user/:username', routes.session.checkAuthentication, routes.user.GETuser
+    @server.post '/api/user/addgcm', routes.session.checkAuthentication, routes.user.POSTaddGcm
   
   start: (port) ->
     @server.listen port, ->
