@@ -13,8 +13,8 @@ class GCMPush
     
     receipient.getGcmIDs().complete (err, gcmIDs) =>
       return callback err if !!err
-      return callback new Error 'No device registered for this user.' if !gcmIDs
-        
+      return callback new Error('No device registered for this user.'), true if !gcmIDs || gcmIDs.length == 0
+      
       # convert into public model
       gcmIDs = ( gcmID.getPublicModel() for gcmID in gcmIDs )
     
