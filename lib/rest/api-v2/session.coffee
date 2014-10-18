@@ -22,6 +22,8 @@ class SessionHandler
         callback new restify.NotAuthorizedError 'Invalid session token.'
       else
         session.getUser().complete callback
+        
+module.exports.SessionHandler = SessionHandler
     
 exports.checkAuthentication = (req, res, next) ->
   

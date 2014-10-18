@@ -24,11 +24,11 @@ moinThrottle = restify.throttle {
 Server Class
 ###
 class MoinWebServer
-  constructor: (moinController) ->
+  constructor: ->
     @server = restify.createServer({
-      version: apiV200.version # REST version
+      #version: apiV200.version # REST version
+      versions: [ apiV200.version ] # REST version
     })
-    @configureServer moinController
     
   configureServer: (moinController) ->
     # MIDDLEWARE #
@@ -56,7 +56,13 @@ class MoinWebServer
     
   routeV200: (moinController) ->
     # These routes require not login
-    @server.get { path: '/', version: apiV200.version }, apiV200.index.GETindex
+    #@server.get { path: '/', version: apiV200.version }, apiV200.index.GETindex
+    @server.get '/', (req, res, next) ->
+      fs = require 'fs'
+      rs = fs.createReadStream '/Users/soren/Downloads/test/index.html'
+      rs.pipe res
+      
+      next()
     
     # Login methods
     @server.post { path: '/api/auth', version: apiV200.version }, apiV200.session.POSTsignin
@@ -68,6 +74,6 @@ class MoinWebServer
   
   start: (port) ->
     @server.listen port, ->
-      console.log "MoinWebServer started on port #{port}."
+      console.log "#{@constructor.name} started on port #{port}."
   
 module.exports.MoinWebServer = MoinWebServer
