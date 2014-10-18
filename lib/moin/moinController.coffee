@@ -28,12 +28,12 @@ class MoinController extends EventEmitter
     @emit 'moin', sender, receipient
   sendMoin: (senderName, receipientName, callback) ->
     @_getUsersFromNames senderName, receipientName, (err, sender, receipient) =>
-      return callback err if !!err
+      return callback? err if !!err
       
       # users are validated at this point
       # send event
       @_sendMoinEvent sender, receipient
       
-      callback null, null
+      callback? null, null
 
 module.exports.MoinController = MoinController
