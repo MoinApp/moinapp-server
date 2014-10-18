@@ -1,6 +1,7 @@
 { EventEmitter } = require 'events'
 socketio = require 'socket.io'
 { SessionHandler } = require './../auth/sessionHandler'
+user = require './user'
 
 class MoinWebSocketServer
   constructor: (webServer) ->
@@ -48,6 +49,8 @@ class MoinWebSocketConnection extends EventEmitter
     # moin by the client
     @socket.on 'moin', (receipientName, callback) =>
       @moinController.sendMoin @user.username, receipientName, callback
+      
+    @socket.on 'getUser', user.getUser
     
 module.exports.MoinWebSocketServer = MoinWebSocketServer
 module.exports.MoinWebSocketConnection = MoinWebSocketConnection
