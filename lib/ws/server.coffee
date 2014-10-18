@@ -21,7 +21,6 @@ class MoinWebSocketConnection extends EventEmitter
   constructor: (@socket, @moinController) ->
       # client sends login message
       @socket.on 'auth', (session, callback) =>
-        console.log "validate login", session
         # we validate the session token, just like /api/auth would do
         @_validateSessionToken session, (err, user) =>
           return callback? err if !!err
