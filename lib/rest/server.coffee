@@ -1,4 +1,5 @@
 restify = require 'restify'
+moinMiddleware = require './moinMiddleware'
 routes = require './routes'
 
 ###
@@ -15,13 +16,13 @@ defaultThrottle = restify.throttle {
 Server Class
 ###
 class MoinWebServer
-  constructor: ->
+  constructor: (moinController) ->
     @server = restify.createServer({
       version: "2.0.0" # REST version
     })
-    @configureServer()
+    @configureServer moinController
     
-  configureServer: ->
+  configureServer: (moinController) ->
     @server.use defaultThrottle
     
     # MIDDLEWARE #
@@ -38,7 +39,7 @@ class MoinWebServer
     @server.post '/api/auth', routes.session.POSTsignin
     @server.post '/api/signup', routes.session.POSTsignup
     # Authorized methods
-    @server.post '/api/moin', routes.session.checkAuthentication, routes.moin.POSTmoin
+    @server.post '/api/moin', routes.session.checkAuthentication, moinMiddleware(moinController), routes.moin.POSTmoin
     @server.post '/api/user/addgcm', routes.session.checkAuthentication, routes.user.POSTaddGcm
     @server.get '/api/user/:username', routes.session.checkAuthentication, routes.user.GETuser
   

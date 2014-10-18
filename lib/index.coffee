@@ -1,9 +1,11 @@
 { MoinWebServer } = require './rest/server'
+{ MoinController } = require './moin/moinController'
 
 main = ->
   port = process.env.PORT || 3000
   
-  server = new MoinWebServer
+  moin = new MoinController
+  server = new MoinWebServer moin
   
   server.start port
 

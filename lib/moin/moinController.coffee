@@ -3,25 +3,18 @@ db = require '../db/'
 
 class MoinController
   constructor: (sender, receipient) ->
-    @receipient = receipient
-    @sender = sender
-    
     @androidPush = new GCMPush process.env.GCM_API_KEY
     
-  setUsersFromNames: (senderName, receipientName, callback) ->
+  _getUsersFromNames: (senderName, receipientName, callback) ->
     @_resolveUser senderName, (err, sender) =>
       return callback err if !!err
       return callback new Error 'User "' + senderName + '" not found.' if !sender
-      
-      @sender = sender
       
       @_resolveUser receipientName, (err, receipient) =>
         return callback err if !!err
         return callback new Error 'User "' + receipientName + '" not found.' if !receipient
         
-        @receipient = receipient
-        
-        callback null
+        callback null, sender, receipient
     
   _resolveUser: (username, callback) ->
     db.User.find({
@@ -30,35 +23,37 @@ class MoinController
       }
     }).complete callback
         
-  sendMoin: (callback) ->
-    warnings = []
-    minimumSuccessCount = 2
-    
-    @androidPush.send @sender, @receipient, (err, results) ->
-      # do not crash because we want to send other notifications, too!
-      if !!err
-        minimumSuccessCount--
-        warnings.push {
-          type: "android",
-          error: err.message
-        }
+  sendMoin: (senderName, receipientName, callback) ->
+    @_getUsersFromNames senderName, receipientName, (err, sender, receipient) =>
       
-      iOSPush = (a, b, cb) ->
-        cb? new Error 'Not implemented.'
-        
-      iOSPush @sender, @receipient, (err, results) ->
+      warnings = []
+      minimumSuccessCount = 2
+    
+      @androidPush.send sender, receipient, (err, results) ->
+        # do not crash because we want to send other notifications, too!
         if !!err
           minimumSuccessCount--
           warnings.push {
-            type: "iOS",
+            type: "android",
             error: err.message
           }
+      
+        iOSPush = (a, b, cb) ->
+          # TODO: add iOS
+          cb? new Error 'Not implemented.'
         
-        err = null
-        if minimumSuccessCount <= 0
-          err = new Error 'No Push succeeded.'
-          console.log "Invalid push:", warnings
-        callback? err, warnings
-    # TODO: add iOS
+        iOSPush sender, receipient, (err, results) ->
+          if !!err
+            minimumSuccessCount--
+            warnings.push {
+              type: "iOS",
+              error: err.message
+            }
+        
+          err = null
+          if minimumSuccessCount <= 0
+            err = new Error 'No Push succeeded.'
+            console.log "Invalid push:", warnings
+          callback? err, warnings
 
 module.exports.MoinController = MoinController

@@ -1,13 +1,11 @@
 db = require '../../db/'
-{ MoinController } = require '../../moin/moinController'
 
 exports.POSTmoin = (req, res, next) ->
   
   sender = req.user?.username
   receipient = req.body?.username
   
-  moin = new MoinController
-  moin.setUsersFromNames sender, receipient, (err) ->
+  req.moinController.sendMoin sender, receipient, (err) ->
     return next err if !!err
     
     # done setting the user objects
