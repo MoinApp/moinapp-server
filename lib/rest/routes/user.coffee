@@ -3,7 +3,7 @@ db = require '../../db/'
 
 exports.GETuser = (req, res, next) ->
   
-  username = req.param?.username
+  username = req.params?.username
   
   db.User.find({
     where: {
