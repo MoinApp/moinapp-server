@@ -81,7 +81,7 @@ exports.POSTsignin = (req, res, next) ->
 exports.POSTsignup = (req, res, next) ->
   
   username = req.body?.username
-  password = req.body?.username
+  password = req.body?.password
   app = req.body?.application
   # optional
   email = req.body?.email
@@ -112,4 +112,8 @@ exports.POSTsignup = (req, res, next) ->
           user.addSession session
           req.user = user
         
+          res.send 200, {
+            code: "Success",
+            message: session.getPublicModel()
+          }
           next()
