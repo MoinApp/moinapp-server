@@ -52,8 +52,14 @@ class MoinController
         
           err = null
           if minimumSuccessCount <= 0
-            err = new Error 'No Push succeeded.'
             console.log "Unsuccessful push:", warnings
+            
+            warningsString = ""
+            warnings.forEach (warning) ->
+              if warningsString != ""
+                warningsString += ", "
+              warningsString += JSON.stringify warning
+            err = new Error 'No Push succeeded: ' + warningsString
           callback? err, warnings
 
 module.exports.MoinController = MoinController
