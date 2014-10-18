@@ -15,13 +15,19 @@ exports.GETuser = (req, res, next) ->
     if !user
       next new restify.ResourceNotFoundError 'User does not exist.'
     else
-      res.send 200, user.getPublicModel()
+      res.send 200, {
+        code: "Success",
+        message: user.getPublicModel()
+      }
       
       next()
 
 exports.POSTaddGcm = (req, res, next) ->
   
   gcmId = req.body?.gcmId
+  
+  if !gcmId
+    return next new restify.InvalidArgumentError 'Specify a GCM ID.'
   
   db.gcmID.find({
     where: {
@@ -34,5 +40,10 @@ exports.POSTaddGcm = (req, res, next) ->
     
     req.user.addGcmID(gcmId).complete (err) ->
       return next err if !!err
+      
+      res.send 200, {
+        code: "Success",
+        message: "GCM ID added."
+      }
       
       next()

@@ -1,8 +1,9 @@
 module.exports = (req, res, next) ->
   
+  ip = req.connection.remoteAddress
   method = req.route.method
-  path = req.route.path
-  text = method + " " + path
+  path = req.path()
+  text = ip + ": " + method + " " + path
   
   console.log text
   
