@@ -1,5 +1,5 @@
 restify = require 'restify'
-moinMiddleware = require './moinMiddleware'
+moinMiddleware = require './moin-middleware'
 routes = require './routes'
 
 ###
