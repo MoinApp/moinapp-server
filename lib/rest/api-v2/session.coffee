@@ -1,6 +1,6 @@
 restify = require 'restify'
 db = require './../../db/'
-{ SessionHandler } = require './../../auth/session'
+{ SessionHandler } = require './../../auth/sessionHandler'
     
 exports.checkAuthentication = (req, res, next) ->
   

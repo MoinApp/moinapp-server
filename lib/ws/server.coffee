@@ -1,5 +1,5 @@
 socketio = require 'socket.io'
-{ SessionHandler } = require './../auth/session'
+{ SessionHandler } = require './../auth/sessionHandler'
 
 class MoinWebSocketServer
   constructor: (webServer) ->
