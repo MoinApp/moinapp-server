@@ -1,5 +1,6 @@
 restify = require 'restify'
 moinMiddleware = require './moin-middleware'
+logger = require './log-middleware'
 routes = require './routes'
 
 ###
@@ -41,12 +42,12 @@ class MoinWebServer
     @server.use restify.queryParser()
     # sanitize paths
     @server.use restify.pre.sanitizePath()
-    # should enable logging. Does not do anything?
-    @server.use restify.requestLogger()
     # enable GZIP responses
     @server.use restify.gzipResponse()
     # Add all headers to the response
     @server.use restify.fullResponse()
+    
+    @server.use logger
     
     # ROUTES #
     @server.use defaultThrottle
