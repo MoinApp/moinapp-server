@@ -30,6 +30,11 @@ class MoinWebServer
       versions: [ apiV200.version ] # REST version
     })
     
+    crashOnError = true
+    if crashOnError
+      @server.on 'uncaughtException', (req, res, route, err) ->
+        throw err
+    
   configureServer: (moinController) ->
     # MIDDLEWARE #
     # only accept requests we can respond to
