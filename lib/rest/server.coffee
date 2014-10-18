@@ -52,16 +52,19 @@ class MoinWebServer
     # ROUTES #
     @server.use defaultThrottle
     
+    @routeV200 moinController
+    
+  routeV200: (moinController) ->
     # These routes require not login
-    @server.get '/', apiV200.index.GETindex
+    @server.get { path: '/', version: apiV200.version }, apiV200.index.GETindex
     
     # Login methods
-    @server.post '/api/auth', apiV200.session.POSTsignin
-    @server.post '/api/signup', apiV200.session.POSTsignup
+    @server.post { path: '/api/auth', version: apiV200.version }, apiV200.session.POSTsignin
+    @server.post { path: '/api/signup', version: apiV200.version }, apiV200.session.POSTsignup
     # Authorized methods
-    @server.post '/api/moin', moinThrottle, apiV200.session.checkAuthentication, moinMiddleware(moinController), apiV200.moin.POSTmoin
-    @server.get '/api/user/:username', apiV200.session.checkAuthentication, apiV200.user.GETuser
-    @server.post '/api/user/addgcm', apiV200.session.checkAuthentication, apiV200.user.POSTaddGcm
+    @server.post { path: '/api/moin', version: apiV200.version }, moinThrottle, apiV200.session.checkAuthentication, moinMiddleware(moinController), apiV200.moin.POSTmoin
+    @server.get { path: '/api/user/:username', version: apiV200.version }, apiV200.session.checkAuthentication, apiV200.user.GETuser
+    @server.post { path: '/api/user/addgcm', version: apiV200.version }, apiV200.session.checkAuthentication, apiV200.user.POSTaddGcm
   
   start: (port) ->
     @server.listen port, ->
