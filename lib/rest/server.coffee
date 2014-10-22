@@ -61,13 +61,7 @@ class MoinWebServer
     
   routeV200: (moinController) ->
     # These routes require not login
-    #@server.get { path: '/', version: apiV200.version }, apiV200.index.GETindex
-    @server.get '/', (req, res, next) ->
-      fs = require 'fs'
-      rs = fs.createReadStream '/Users/soren/Downloads/test/index.html'
-      rs.pipe res
-      
-      next()
+    @server.get { path: '/', version: apiV200.version }, apiV200.index.GETindex
     
     # Login methods
     @server.post { path: '/api/auth', version: apiV200.version }, apiV200.session.POSTsignin
