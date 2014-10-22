@@ -2,8 +2,11 @@ gcm = require 'node-gcm'
 uuid = require 'node-uuid'
 
 class GCMPush
-  constructor: (gcmApiKey) ->
+  constructor: (gcmApiKey, moinController) ->
     @gcmSender = new gcm.Sender gcmApiKey
+    
+    moinController.on 'moin', (sender, receipient) =>
+      @send sender, receipient
     
   send: (sender, receipient, callback) ->
     if !sender?.getPublicModel?
@@ -12,8 +15,8 @@ class GCMPush
       return callback new Error 'Must provide database object for "receipient".'
     
     receipient.getGcmIDs().complete (err, gcmIDs) =>
-      return callback err if !!err
-      return callback new Error('No device registered for this user.'), true if !gcmIDs || gcmIDs.length == 0
+      return callback? err if !!err
+      return callback? new Error('No device registered for this user.'), true if !gcmIDs || gcmIDs.length == 0
       
       # convert into public model
       gcmIDs = ( gcmID.getPublicModel() for gcmID in gcmIDs )

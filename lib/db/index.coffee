@@ -16,7 +16,8 @@ if !isHeroku()
   sequelize = new Sequelize dbConfig.name, dbConfig.username, dbConfig.password, {
     dialect: 'sqlite',
     storage: dbConfig.name,
-    logging: console.log
+    #logging: console.log
+    logging: false
   }
 else
   match = HEROKU_URL.match /postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/

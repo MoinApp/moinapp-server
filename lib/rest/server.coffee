@@ -24,11 +24,16 @@ moinThrottle = restify.throttle {
 Server Class
 ###
 class MoinWebServer
-  constructor: (moinController) ->
+  constructor: ->
     @server = restify.createServer({
-      version: apiV200.version # REST version
+      #version: apiV200.version # REST version
+      versions: [ apiV200.version ] # REST version
     })
-    @configureServer moinController
+    
+    crashOnError = true
+    if crashOnError
+      @server.on 'uncaughtException', (req, res, route, err) ->
+        throw err
     
   configureServer: (moinController) ->
     # MIDDLEWARE #
@@ -68,6 +73,6 @@ class MoinWebServer
   
   start: (port) ->
     @server.listen port, ->
-      console.log "MoinWebServer started on port #{port}."
+      console.log "#{@constructor.name} started on port #{port}."
   
 module.exports.MoinWebServer = MoinWebServer
