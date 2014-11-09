@@ -71,6 +71,7 @@ class MoinWebServer
     # Authorized methods
     @server.post { path: '/api/moin', version: apiV300.version }, moinThrottle, apiV300.session.checkAuthentication, moinMiddleware(moinController), apiV300.moin.POSTmoin
     @server.get { path: '/api/user/:username', version: apiV300.version }, apiV300.session.checkAuthentication, apiV300.user.GETuser
+    @server.get { path: '/api/user', version: apiV300.version}, apiV300.session.checkAuthentication, apiV300.user.GETuserSearch
     @server.post { path: '/api/user/addgcm', version: apiV300.version }, apiV300.session.checkAuthentication, apiV300.user.POSTaddGcm
 
 
