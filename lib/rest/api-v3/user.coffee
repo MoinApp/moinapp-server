@@ -44,6 +44,22 @@ exports.GETuserSearch = (req, res, next) ->
       code: "Success",
       message: publicUsers
     }
+    
+    next()
+    
+exports.GETusersRecents = (req, res, next) ->
+  
+  req.user.getRecents().complete (err, recents) ->
+    return next err if !!err
+    
+    publicRecents = []
+    recents.forEach (recent) ->
+      publicRecents.push recent.getPublicModel()
+      
+    res.send 200, {
+      code: "Success",
+      message: publicRecents
+    }
 
 exports.POSTaddGcm = (req, res, next) ->
 
