@@ -38,6 +38,8 @@ gcmID = require('./models/gcmID') sequelize
 # Push IDs
 User.hasMany gcmID
 gcmID.belongsTo User
+# User's recents
+User.hasMany User, { as: 'Recents', joinTableName: 'userRecents' }
 # Login sessions
 User.hasMany Session
 Session.belongsTo User

@@ -24,16 +24,22 @@ class MoinController extends EventEmitter
       }
     }).complete callback
   
+  _addReceivingUserToRecents: (sender, recipient, callback) ->
+    # adds the receiving user to the "recents" list of the sender
+    sender.addRecent(recipient).complete callback
   _sendMoinEvent: (sender, receipient) ->
     @emit 'moin', sender, receipient
   sendMoin: (senderName, receipientName, callback) ->
     @_getUsersFromNames senderName, receipientName, (err, sender, receipient) =>
       return callback? err if !!err
       
-      # users are validated at this point
-      # send event
-      @_sendMoinEvent sender, receipient
+      @_addReceivingUserToRecents sender, receipient, (err) =>
+        return callback? err if !!err
+        
+        # users are validated at this point
+        # send event
+        @_sendMoinEvent sender, receipient
       
-      callback? null, null
+        callback? null, null
 
 module.exports.MoinController = MoinController
