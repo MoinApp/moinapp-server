@@ -34,8 +34,11 @@ else
 User = require('./models/user') sequelize
 Session = require('./models/session') sequelize
 gcmID = require('./models/gcmID') sequelize
+# Relations
+# Push IDs
 User.hasMany gcmID
 gcmID.belongsTo User
+# Login sessions
 User.hasMany Session
 Session.belongsTo User
 
