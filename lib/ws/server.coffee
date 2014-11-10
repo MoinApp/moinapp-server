@@ -50,6 +50,9 @@ class MoinWebSocketConnection extends EventEmitter
       @moinController.sendMoin @user.username, receipientName, callback
       
     @socket.on 'getUser', user.getUser
+    @socket.on 'findUser', user.findUser
+    @socket.on 'getRecents', (callback) =>
+      user.getRecents @user, callback
     
 module.exports.MoinWebSocketServer = MoinWebSocketServer
 module.exports.MoinWebSocketConnection = MoinWebSocketConnection
