@@ -1,3 +1,4 @@
+restify = require 'restify'
 db = require '../../db/'
 
 exports.POSTmoin = (req, res, next) ->
