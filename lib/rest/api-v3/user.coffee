@@ -29,7 +29,7 @@ exports.GETuserSearch = (req, res, next) ->
   db.User.findAll({
     where: {
       username: {
-        like: username + "%"
+        like: "%" + username + "%"
       }
     }
   }).complete (err, users) ->
