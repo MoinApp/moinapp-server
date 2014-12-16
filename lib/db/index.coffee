@@ -51,7 +51,7 @@ if !isHeroku()
     # create dummy user
     User.createUserAndEncryptPassword({
       username: 'sgade',
-      password: 'test',
+      password: 'testtest',
       email: 'a.b@c.d'
     }).complete (err, user) ->
       gcmID.create({
