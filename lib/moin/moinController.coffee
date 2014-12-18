@@ -1,10 +1,12 @@
 { EventEmitter } = require 'events' 
 db = require '../db/'
 { GCMPush } = require './push/gcmPush'
+{ APNPush } = require './push/apnPush'
 
 class MoinController extends EventEmitter
   constructor: (sender, receipient) ->
     @androidPush = new GCMPush process.env.GCM_API_KEY, this
+    @iOSPush = new APNPush this
     
   _getUsersFromNames: (senderName, receipientName, callback) ->
     @_resolveUser senderName, (err, sender) =>
