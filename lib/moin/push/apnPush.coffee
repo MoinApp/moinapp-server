@@ -2,10 +2,14 @@ apn = require 'apn'
 db = require '../../db/'
 
 class APNPush
-  constructor: (moinController) ->
+  constructor: (pfxBuffer, moinController) ->
     # do some init here
 
-    @apnConnection = new apn.Connection {}
+    # see https://github.com/argon/node-apn/blob/master/doc/connection.markdown
+    @apnConnection = new apn.Connection {
+      pfx: pfxBuffer,
+      connectionTimeout: 5000
+    }
 
     @feedback = new apn.Feedback {
       "interval": ( 6 * 60 * 60 ) # check every 6 hrs
@@ -38,21 +42,23 @@ class APNPush
 
     # TODO: Push
 
-    iOSDeviceTokens = [] # recipient.getIOsDeviceTokens()
-    for token, i in iOSDeviceTokens
-      device = new apn.Device token
+    receipient.getAPNDeviceTokens().complete (err, deviceTokens) =>
+      return callback err if !!err
 
-      push = new apn.Notification()
+      for token, i in deviceTokens
+        device = new apn.Device token
 
-      push.expiry = Date.now() / 1000 + 3600 # 1 hr lifetime
-      push.badge = 1
-      push.alert = "Moin"
-      push.payload = {
-        "sender": sender.getPublicModel()
-      }
+        push = new apn.Notification()
 
-      @apnConnection.pushNotification push, device
+        push.expiry = Date.now() / 1000 + 3600 # 1 hr lifetime
+        push.badge = 1
+        push.alert = "Moin"
+        push.payload = {
+          "sender": sender.getPublicModel()
+        }
 
-    callback new Error 'Not implemented.', null
+        @apnConnection.pushNotification push, device
+
+    callback null, null
 
 module.exports.APNPush = APNPush
