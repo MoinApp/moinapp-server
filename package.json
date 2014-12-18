@@ -1,7 +1,7 @@
 {
   "name": "moinapp-server",
-  "version": "0.1.0",
-  "description": "moinapp-server ==============",
+  "version": "0.2.0",
+  "description": "The server for Moin.",
   "main": "lib/index.js",
   "dependencies": {
     "coffee-script": "^1.7.1",
