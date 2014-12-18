@@ -86,3 +86,29 @@ exports.POSTaddGcm = (req, res, next) ->
       }
 
       next()
+
+exports.POSTaddAPNToken = (req, res, next) ->
+
+  apnDeviceToken = req.body?.apnDeviceToken
+
+  if !apnDeviceToken
+    return next new restify.InvalidArgumentError 'Specify APN Device Token.'
+
+  db.APNDeviceToken.find({
+    where: {
+      uid: apnDeviceToken
+    }
+  }).complete (err, token) ->
+    return next err if !!err
+    if !!token
+      return next new restify.InvalidArgumentError 'APN Device Token is already added.'
+
+    req.user.addAPNDeviceToken(apnDeviceToken).complete (err) ->
+      return next err if !!err
+
+      res.send 200, {
+        code: "Success",
+        message: "APN Device Token added."
+      }
+
+      next()
