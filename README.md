@@ -4,7 +4,7 @@ The server for Moin.
 
 **Moin** is an Instant Messenger based on one word: Moin.
 
-The server is deployed to http://moinapp.herokuapp.com/ (this link will take you here).
+The server is deployed to http://moinapp.herokuapp.com/ (this link is funny).
 
 ## Requirements
 
