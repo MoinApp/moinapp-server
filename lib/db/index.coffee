@@ -34,10 +34,13 @@ else
 User = require('./models/user') sequelize
 Session = require('./models/session') sequelize
 gcmID = require('./models/gcmID') sequelize
+APNDeviceToken = require('./models/apnDeviceToken') sequelize
 # Relations
 # Push IDs
 User.hasMany gcmID
 gcmID.belongsTo User
+User.hasMany APNDeviceToken
+APNDeviceToken.belongsTo User
 # User's recents
 User.hasMany User, { as: 'Recents', joinTableName: 'userRecents' }
 # Login sessions
@@ -69,5 +72,6 @@ module.exports = {
   
   User: User,
   Session: Session,
-  gcmID: gcmID
+  gcmID: gcmID,
+  APNDeviceToken: APNDeviceToken
 }

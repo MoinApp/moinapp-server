@@ -19,6 +19,16 @@ class APNPush
 
   deleteDeviceToken: (deviceToken) ->
     # TODO: implement
+    db.APNDeviceToken.find({
+      where: {
+        uid: deviceToken
+      }
+    }).complete (err, db_deviceToken) ->
+      if ( !!err )
+        console.log "APN feedback: Deleting '" + deviceToken + "' errored: " + err
+        return
+
+      db_deviceToken.destroy()
 
   send: (sender, receipient, callback) ->
     if sender?.getPublicModel?
