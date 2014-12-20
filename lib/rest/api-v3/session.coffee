@@ -48,10 +48,7 @@ exports.POSTsignin = (req, res, next) ->
 
         user.addSession session
 
-        res.send 200, {
-          code: "Success",
-          message: session.getPublicModel()
-        }
+        res.send 200, session.getPublicModel()
 
         next()
 
@@ -88,8 +85,5 @@ exports.POSTsignup = (req, res, next) ->
 
           user.addSession session
 
-          res.send 200, {
-            code: "Success",
-            message: session.getPublicModel()
-          }
+          res.send 200, session.getPublicModel()
           next()

@@ -15,10 +15,7 @@ exports.GETuser = (req, res, next) ->
     if !user
       next new restify.ResourceNotFoundError 'User does not exist.'
     else
-      res.send 200, {
-        code: "Success",
-        message: user.getPublicModel()
-      }
+      res.send 200, user.getPublicModel()
 
       next()
 
@@ -40,26 +37,20 @@ exports.GETuserSearch = (req, res, next) ->
     users.forEach (user) ->
       publicUsers.push user.getPublicModel()
 
-    res.send 200, {
-      code: "Success",
-      message: publicUsers
-    }
-    
+    res.send 200, publicUsers
+
     next()
-    
+
 exports.GETusersRecents = (req, res, next) ->
-  
+
   req.user.getRecents().complete (err, recents) ->
     return next err if !!err
-    
+
     publicRecents = []
     recents.forEach (recent) ->
       publicRecents.push recent.getPublicModel()
-      
-    res.send 200, {
-      code: "Success",
-      message: publicRecents
-    }
+
+    res.send 200, publicRecents
 
 exports.POSTaddGcm = (req, res, next) ->
 

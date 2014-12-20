@@ -5,7 +5,7 @@ exports.POSTmoin = (req, res, next) ->
 
   sender = req.user?.username
   recipient = req.body?.username
-  
+
   if !sender
     return next new restify.InternalError 'You are not authorized.'
   if !sender || !recipient
@@ -15,7 +15,6 @@ exports.POSTmoin = (req, res, next) ->
     return next err if !!err
 
     res.send 200, {
-      code: "Success",
-      message: warnings
+      warnings: warnings
     }
     next()
