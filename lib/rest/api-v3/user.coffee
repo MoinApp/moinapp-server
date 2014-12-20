@@ -59,6 +59,7 @@ exports.POSTaddGcm = (req, res, next) ->
   if !gcmId
     return next new restify.InvalidArgumentError 'Specify a GCM ID.'
 
+
   db.gcmID.find({
     where: {
       uid: gcmId
@@ -68,12 +69,10 @@ exports.POSTaddGcm = (req, res, next) ->
     if !!id
       return next new restify.InvalidArgumentError 'GCM ID is already added.'
 
-    req.user.addGcmID(gcmId).complete (err) ->
-      return next err if !!err
+    gcm = db.gcmID.createNew(gcmId).complete (err, gcmId) ->
+      req.user.addGcmID(gcmId).complete (err) ->
+        return next err if !!err
 
-      res.send 200, {
-        code: "Success",
-        message: "GCM ID added."
-      }
+        res.send 200, gcmId
 
-      next()
+        next()

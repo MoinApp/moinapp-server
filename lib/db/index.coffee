@@ -3,7 +3,7 @@ Sequelize = require 'sequelize'
 HEROKU_URL = process.env.HEROKU_POSTGRESQL_JADE_URL
 isHeroku = ->
   return HEROKU_URL?
-  
+
 
 if !isHeroku()
   # local
@@ -21,7 +21,7 @@ if !isHeroku()
   }
 else
   match = HEROKU_URL.match /postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/
-  
+
   sequelize = new Sequelize match[5], match[1], match[2], {
     dialect:  'postgres',
     protocol: 'postgres',
@@ -47,17 +47,18 @@ Session.belongsTo User
 if !isHeroku()
   sequelize.sync({ force:true }).success () ->
     crypt = require './crypt'
-    
+
     # create dummy user
     User.createUserAndEncryptPassword({
       username: 'sgade',
       password: 'testtest',
       email: 'a.b@c.d'
     }).complete (err, user) ->
-      gcmID.create({
-        uid: 'blub'
-      }).complete (err, gcmId) ->
-        user.addGcmID gcmId
+      if user
+        gcmID.create({
+          uid: 'blub'
+        }).complete (err, gcmId) ->
+          user.addGcmID gcmId
 else
   sequelize.sync().complete (err) ->
     if !!err
@@ -66,7 +67,7 @@ else
 module.exports = {
   Sequelize: Sequelize,
   sequelize: sequelize,
-  
+
   User: User,
   Session: Session,
   gcmID: gcmID
