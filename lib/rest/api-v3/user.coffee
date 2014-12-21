@@ -43,7 +43,7 @@ exports.GETuserSearch = (req, res, next) ->
 
 exports.GETusersRecents = (req, res, next) ->
 
-  req.user.getRecents().complete (err, recents) ->
+  req.user.getRecents({order: 'createdAt'}).complete (err, recents) ->
     return next err if !!err
 
     publicRecents = []

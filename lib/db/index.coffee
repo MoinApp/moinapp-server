@@ -45,7 +45,7 @@ User.hasMany Session
 Session.belongsTo User
 
 if !isHeroku()
-  sequelize.sync({ force:true }).success () ->
+  sequelize.sync({ force:false }).success () ->
     crypt = require './crypt'
 
     # create dummy user
