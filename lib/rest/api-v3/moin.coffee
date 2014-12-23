@@ -11,10 +11,8 @@ exports.POSTmoin = (req, res, next) ->
   if !sender || !recipient
     return next new restify.InvalidArgumentError 'Specify a recipient.'
 
-  req.moinController.sendMoin sender, recipient, (err, warnings) ->
+  req.moinController.sendMoin sender, recipient, (err) ->
     return next err if !!err
 
-    res.send 200, {
-      warnings: warnings
-    }
+    res.send 200
     next()
