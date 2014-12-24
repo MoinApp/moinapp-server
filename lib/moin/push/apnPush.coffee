@@ -4,6 +4,9 @@ db = require '../../db/'
 class APNPush
   constructor: (pfxBuffer, moinController) ->
     # do some init here
+    if !pfxBuffer || pfxBuffer.length == 0
+      console.log "Warning: No Apple Push Notification certificate provided."
+      return
 
     # see https://github.com/argon/node-apn/blob/master/doc/connection.markdown
     @apnConnection = new apn.Connection {
@@ -17,9 +20,11 @@ class APNPush
     @feedback.on 'feedback', (time, deviceTokenBuffer) =>
       deviceToken = deviceTokenBuffer.toString()
       @deleteDeviceToken deviceToken
+    console.log "APN feedback service started."
 
     moinController.on 'moin', (sender, receipient) =>
       @send sender, receipient
+    console.log "APN Push running."
 
   deleteDeviceToken: (deviceToken) ->
     # TODO: implement
