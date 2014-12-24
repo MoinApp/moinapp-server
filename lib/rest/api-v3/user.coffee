@@ -74,7 +74,7 @@ exports.POSTaddGcm = (req, res, next) ->
       req.user.addGcmID(gcmId).complete (err) ->
         return next err if !!err
 
-        res.send 200, gcmId
+        res.send 200, { token: gcmId }
 
       next()
 
@@ -99,9 +99,6 @@ exports.POSTaddAPNToken = (req, res, next) ->
       req.user.addAPNDeviceToken(apn).complete (err) ->
         return next err if !!err
 
-        res.send 200, {
-          code: "Success",
-          message: "APN Device Token added."
-        }
+        res.send 200, { token: apnDeviceToken }
 
         next()
