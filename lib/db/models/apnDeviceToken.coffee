@@ -11,6 +11,14 @@ module.exports = (sequelize) ->
       }
     }
   }, {
+    classMethods: {
+      createNew: (apnToken) ->
+        properties = {
+          uid: apnToken
+        }
+
+        APNDeviceToken.findOrCreate properties
+    }
     instanceMethods: {
       getPublicModel: ->
         this.uid

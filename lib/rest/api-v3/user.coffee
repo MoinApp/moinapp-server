@@ -70,13 +70,14 @@ exports.POSTaddGcm = (req, res, next) ->
       return next new restify.InvalidArgumentError 'GCM ID is already added.'
 
     gcm = db.gcmID.createNew(gcmId).complete (err, gcmId) ->
+      return next err if !!err
       req.user.addGcmID(gcmId).complete (err) ->
         return next err if !!err
 
         res.send 200, gcmId
 
       next()
-      
+
 exports.POSTaddAPNToken = (req, res, next) ->
 
   apnDeviceToken = req.body?.apnDeviceToken
@@ -93,13 +94,14 @@ exports.POSTaddAPNToken = (req, res, next) ->
     if !!token
       return next new restify.InvalidArgumentError 'APN Device Token is already added.'
 
-    req.user.addAPNDeviceToken(apnDeviceToken).complete (err) ->
+    db.APNDeviceToken.createNew(apnDeviceToken).complete (err, apn) ->
       return next err if !!err
+      req.user.addAPNDeviceToken(apn).complete (err) ->
+        return next err if !!err
 
-      res.send 200, {
-        code: "Success",
-        message: "APN Device Token added."
-      }
+        res.send 200, {
+          code: "Success",
+          message: "APN Device Token added."
+        }
 
-      next()
-      
+        next()
