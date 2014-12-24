@@ -15,10 +15,7 @@ exports.GETuser = (req, res, next) ->
     if !user
       next new restify.ResourceNotFoundError 'User does not exist.'
     else
-      res.send 200, {
-        code: "Success",
-        message: user.getPublicModel()
-      }
+      res.send 200, user.getPublicModel()
 
       next()
 
@@ -40,26 +37,20 @@ exports.GETuserSearch = (req, res, next) ->
     users.forEach (user) ->
       publicUsers.push user.getPublicModel()
 
-    res.send 200, {
-      code: "Success",
-      message: publicUsers
-    }
-    
+    res.send 200, publicUsers
+
     next()
-    
+
 exports.GETusersRecents = (req, res, next) ->
-  
+
   req.user.getRecents().complete (err, recents) ->
     return next err if !!err
-    
+
     publicRecents = []
     recents.forEach (recent) ->
       publicRecents.push recent.getPublicModel()
-      
-    res.send 200, {
-      code: "Success",
-      message: publicRecents
-    }
+
+    res.send 200, publicRecents
 
 exports.POSTaddGcm = (req, res, next) ->
 
@@ -67,6 +58,7 @@ exports.POSTaddGcm = (req, res, next) ->
 
   if !gcmId
     return next new restify.InvalidArgumentError 'Specify a GCM ID.'
+
 
   db.gcmID.find({
     where: {
@@ -77,16 +69,14 @@ exports.POSTaddGcm = (req, res, next) ->
     if !!id
       return next new restify.InvalidArgumentError 'GCM ID is already added.'
 
-    req.user.addGcmID(gcmId).complete (err) ->
-      return next err if !!err
+    gcm = db.gcmID.createNew(gcmId).complete (err, gcmId) ->
+      req.user.addGcmID(gcmId).complete (err) ->
+        return next err if !!err
 
-      res.send 200, {
-        code: "Success",
-        message: "GCM ID added."
-      }
+        res.send 200, gcmId
 
       next()
-
+      
 exports.POSTaddAPNToken = (req, res, next) ->
 
   apnDeviceToken = req.body?.apnDeviceToken
@@ -112,3 +102,4 @@ exports.POSTaddAPNToken = (req, res, next) ->
       }
 
       next()
+      

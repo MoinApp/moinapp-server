@@ -2,7 +2,7 @@ Sequelize = require 'sequelize'
 uuid = require 'node-uuid'
 
 module.exports = (sequelize) ->
-  
+
   Session = sequelize.define 'Session', {
     uid: {
       type: Sequelize.STRING, # uuid v4
@@ -16,13 +16,15 @@ module.exports = (sequelize) ->
           uid: uuid.v1() # time-based,
           application: appID
         }
-        
+
         Session.findOrCreate properties
     },
     instanceMethods: {
       getPublicModel: ->
-        @uid
+        {
+          token: @uid
+        }
     }
   }
-  
+
   Session
