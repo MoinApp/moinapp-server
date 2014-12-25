@@ -40,6 +40,23 @@ class APNPush
 
     console.log "APN transmission error:", errorMessage + " (Code: " + errorCode + ")", "for notification:", notification, "to device:", device
 
+    if errorCode == 8 # invalid token
+      token = device.token.toString 'hex'
+      console.log "Searching for '" + token + "'..."
+      db.APNDeviceToken.find({
+        where: {
+          uid: token
+        }
+      }).complete (err, deviceToken) ->
+        if !!err
+          console.log err
+
+        deviceToken.destroy().complete (err) ->
+          if !!err
+            console.log err
+          else
+            console.log "Device token removed."
+
   deleteDeviceToken: (deviceToken) ->
     # TODO: implement
     db.APNDeviceToken.find({
