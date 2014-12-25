@@ -9,10 +9,11 @@ class MoinController extends EventEmitter
     @iOSPush = new APNPush @getAPNCertificate(), this
 
   getAPNCertificate: ->
-    certString = process.env.APN_CERT_PFX
-
-    #new Buffer(new Buffer(certString, 'base64').toString('binary'))
-    new Buffer(certString)
+    certString = process.env.APN_CERT
+    if certString
+      new Buffer(certString)
+    else
+      new Buffer(0)
     
   _getUsersFromNames: (senderName, receipientName, callback) ->
     @_resolveUser senderName, (err, sender) =>

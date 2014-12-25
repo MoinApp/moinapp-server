@@ -16,7 +16,6 @@ class APNPush
     @apnConnection.on 'error', (err) ->
       console.log "APN connection error:", err
     @apnConnection.on 'transmissionError', @handleError
-      
 
     @feedback = new apn.Feedback {
       "interval": ( 6 * 60 * 60 ) # check every 6 hrs
