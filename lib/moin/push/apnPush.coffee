@@ -13,8 +13,9 @@ class APNPush
       pfx: pfxBuffer,
       connectionTimeout: 5000
     }
-    @apnConnection.on 'error', (err) ->
+    @apnConnection.on 'error', (err) =>
       console.log "APN connection error:", err
+      @isRunning = false
     @apnConnection.on 'transmissionError', @handleError
 
     @feedback = new apn.Feedback {
@@ -28,6 +29,7 @@ class APNPush
     moinController.on 'moin', (sender, receipient) =>
       @send sender, receipient
     console.log "APN Push running."
+    @isRunning = true
 
   handleError: (errorCode, notification, device) ->
     errorMessage = errorCode
@@ -52,6 +54,8 @@ class APNPush
       db_deviceToken.destroy()
 
   send: (sender, receipient, callback) ->
+    if !@isRunning
+      return callback? new Error 'APN service is not running.'
     if !sender?.getPublicModel?
       return callback? new Error 'Must provide database object for "sender".'
     if !receipient?.getPublicModel?
