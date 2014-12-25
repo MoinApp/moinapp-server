@@ -3,10 +3,15 @@ uuid = require 'node-uuid'
 
 class GCMPush
   constructor: (gcmApiKey, moinController) ->
+    if !gcmApiKey
+      console.log "Warning: No Google Cloud Messages API Key provided."
+      return
+
     @gcmSender = new gcm.Sender gcmApiKey
     
     moinController.on 'moin', (sender, receipient) =>
       @send sender, receipient
+    console.log "GCM Push running."
     
   send: (sender, receipient, callback) ->
     if !sender?.getPublicModel?
