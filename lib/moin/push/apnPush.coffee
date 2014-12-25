@@ -90,7 +90,7 @@ class APNPush
         # expiry crashes with "value out of bounds"
         #push.expiry = Date.now() / 1000 + 3600 # 1 hr lifetime
         push.badge = 1
-        push.alert = "Moin"
+        push.alert = "by " + sender.username
         push.sound = "default"
         push.payload = {
           "sender": sender.getPublicModel()
