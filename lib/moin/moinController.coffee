@@ -13,7 +13,7 @@ class MoinController extends EventEmitter
     certString = process.env.APN_CERT
     certFilename = process.env.APN_CERT_FILE
     if certString
-      new Buffer(certString, 'binary')
+      new Buffer(certString, 'base64')
     else if certFilename
       fs.readFileSync certFilename
     else
