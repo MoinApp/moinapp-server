@@ -70,6 +70,16 @@ class APNPush
 
       db_deviceToken.destroy()
 
+  getRandomMoinSoundName: ->
+    rand = 0
+    while ( rand < 1 || rand > 5 || rand == 2 )
+      rand = Math.floor @random 1, 6
+
+    "moin" + rand + ".wav"
+
+  random: (min, max) ->
+    min + ( Math.random() * (max - min ) )
+
   send: (sender, receipient, callback) ->
     if !@isRunning
       return callback? new Error 'APN service is not running.'
@@ -91,7 +101,7 @@ class APNPush
         #push.expiry = Date.now() / 1000 + 3600 # 1 hr lifetime
         push.badge = 1
         push.alert = "by " + sender.username
-        push.sound = "default"
+        push.sound = @getRandomMoinSoundName()
         push.payload = {
           "sender": sender.getPublicModel()
         }
