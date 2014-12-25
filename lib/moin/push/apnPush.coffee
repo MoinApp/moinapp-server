@@ -75,6 +75,6 @@ class APNPush
 
         @apnConnection.pushNotification push, device
 
-    callback? null, null
+      callback? null, null
 
 module.exports.APNPush = APNPush
