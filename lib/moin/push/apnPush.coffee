@@ -65,7 +65,7 @@ class APNPush
       return callback err if !!err
 
       for token, i in deviceTokens
-        tokenBuffer = new Buffer token.uid
+        tokenBuffer = new Buffer token.uid, 'hex'
         device = new apn.Device tokenBuffer
 
         push = new apn.Notification()
