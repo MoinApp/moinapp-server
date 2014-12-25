@@ -70,7 +70,8 @@ class APNPush
 
         push = new apn.Notification()
 
-        push.expiry = Date.now() / 1000 + 3600 # 1 hr lifetime
+        # expiry crashes with "value out of bounds"
+        #push.expiry = Date.now() / 1000 + 3600 # 1 hr lifetime
         push.badge = 1
         push.alert = "Moin"
         push.payload = {
