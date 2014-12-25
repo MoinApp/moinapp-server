@@ -31,10 +31,11 @@ class APNPush
     console.log "APN Push running."
 
   handleError: (errorCode, notification, device) ->
-
     errorMessage = errorCode
-    if ( errorCode == 513 )
-      errorMessage = "Module Initialization Failed"
+    for key of apn.Errors
+      if apn.Errors[key] == errorCode
+        errorMessage = key
+        break
 
     console.log "APN transmission error:", errorMessage + " (Code: " + errorCode + ")", "for notification:", notification, "to device:", device
 
