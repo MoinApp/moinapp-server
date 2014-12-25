@@ -6,7 +6,13 @@ db = require '../db/'
 class MoinController extends EventEmitter
   constructor: ->
     @androidPush = new GCMPush process.env.GCM_API_KEY, this
-    @iOSPush = new APNPush new Buffer(0), this
+    @iOSPush = new APNPush @getAPNCertificate(), this
+
+  getAPNCertificate: ->
+    certString = process.env.APN_CERT_PFX
+
+    #new Buffer(new Buffer(certString, 'base64').toString('binary'))
+    new Buffer(certString)
     
   _getUsersFromNames: (senderName, receipientName, callback) ->
     @_resolveUser senderName, (err, sender) =>
