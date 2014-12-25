@@ -74,6 +74,7 @@ class APNPush
         #push.expiry = Date.now() / 1000 + 3600 # 1 hr lifetime
         push.badge = 1
         push.alert = "Moin"
+        push.sound = "default"
         push.payload = {
           "sender": sender.getPublicModel()
         }
