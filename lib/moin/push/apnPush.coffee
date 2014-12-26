@@ -71,14 +71,10 @@ class APNPush
       db_deviceToken.destroy()
 
   getRandomMoinSoundName: ->
-    rand = 0
-    while ( rand < 1 || rand > 5 || rand == 2 )
-      rand = Math.floor @random 1, 6
+    moinSounds = [ 1, 3, 4, 5 ]
+    randomIndex = Math.floor( Math.random() * moinSounds.length )
 
-    "moin" + rand + ".wav"
-
-  random: (min, max) ->
-    min + ( Math.random() * (max - min ) )
+    "moin" + moinSounds[randomIndex] + ".wav"
 
   send: (sender, receipient, callback) ->
     if !@isRunning
