@@ -22,8 +22,8 @@ exports.checkAuthentication = (req, res, next) ->
 
 exports.POSTsignin = (req, res, next) ->
 
-  username = req.body?.username
-  password = req.body?.password
+  username = req.body?.username.trim()
+  password = req.body?.password.trim()
   app = req.headers?["user-agent"]
 
   if !username || !password || !app
@@ -54,11 +54,11 @@ exports.POSTsignin = (req, res, next) ->
 
 exports.POSTsignup = (req, res, next) ->
 
-  username = req.body?.username
-  password = req.body?.password
+  username = req.body?.username.trim()
+  password = req.body?.password.trim()
   app = req.headers?["user-agent"]
   # optional, but clients should send this
-  email = req.body?.email
+  email = req.body?.email.trim()
 
   if !username || !password || !app
     return next new restify.InvalidArgumentError 'Please provide username and password at least.'

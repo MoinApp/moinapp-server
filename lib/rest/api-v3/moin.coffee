@@ -4,7 +4,7 @@ db = require '../../db/'
 exports.POSTmoin = (req, res, next) ->
 
   sender = req.user?.username
-  recipient = req.body?.username
+  recipient = req.body?.username.trim()
 
   if !sender
     return next new restify.InternalError 'You are not authorized.'

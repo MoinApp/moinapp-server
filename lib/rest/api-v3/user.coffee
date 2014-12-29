@@ -3,7 +3,7 @@ db = require '../../db/'
 
 exports.GETuser = (req, res, next) ->
 
-  username = req.params?.username
+  username = req.params?.username.trim()
 
   db.User.find({
     where: {
@@ -21,7 +21,7 @@ exports.GETuser = (req, res, next) ->
 
 exports.GETuserSearch = (req, res, next) ->
 
-  username = req.params?.username
+  username = req.params?.username.trim()
 
   db.User.findAll({
     where: {
