@@ -1,4 +1,4 @@
-# Moin Server
+# MoinApp Server
 
 The server for Moin.
 
