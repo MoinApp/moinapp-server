@@ -1,8 +1,11 @@
 package routes
 
 import (
+	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
+	"os"
+	"strconv"
 )
 
 const (
@@ -19,9 +22,20 @@ func InitRouter() {
 	router.HandleFunc("/users/signup", serve_Users_SignUp).Methods("POST")
 }
 
+func getListeningPort() uint {
+	port := os.Getenv("PORT")
+	portNum, err := strconv.ParseUint(port, 10, 32)
+	if err != nil {
+		panic(err)
+	}
+	return uint(portNum)
+}
+
 func StartListening() {
+	listenFormat := fmt.Sprintf(":%v", getListeningPort())
+
 	http.Handle("/", router)
-	http.ListenAndServe(":3000", nil)
+	http.ListenAndServe(listenFormat, nil)
 }
 
 func http_redirect(w http.ResponseWriter, newLocation string) {
