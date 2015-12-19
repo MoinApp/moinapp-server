@@ -14,8 +14,11 @@ type User struct {
 }
 
 func CreateUser(name, password, email string) *User {
-	password = string(sha256.Sum256(password))
-	email = string(md5.Sum(email))
+	// create hashes
+	passwordHash := sha256.Sum256([]byte(password))
+	password = string(passwordHash[:sha256.Size])
+	emailHash := md5.Sum([]byte(email))
+	email = string(emailHash[:md5.Size])
 
 	user := &User{
 		Name:     name,
