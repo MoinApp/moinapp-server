@@ -35,8 +35,8 @@ func IsUsernameTaken(username string) bool {
 	var query = &User{
 		Name: username,
 	}
-	var result = &User{Name: "error"}
+	var result = &User{Password: "error"}
 
 	db.Where(query).First(result)
-	return (result.Name != "error")
+	return (result.Password != "error")
 }
