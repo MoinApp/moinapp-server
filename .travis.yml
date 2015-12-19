@@ -1,3 +1,6 @@
 language: go
+go:
+  - 1.5.2
+
 install: make get-deps
 script: go build
