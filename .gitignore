@@ -2,4 +2,5 @@
 .DS_Store
 
 # Application
+moinapp-server
 db.sqlite3
