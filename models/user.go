@@ -30,3 +30,13 @@ func CreateUser(name, password, email string) *User {
 
 	return user
 }
+
+func IsUsernameTaken(username string) bool {
+	var query = &User{
+		Name: username,
+	}
+	var result = &User{Name: "error"}
+
+	db.Where(query).First(result)
+	return (result.Name != "error")
+}

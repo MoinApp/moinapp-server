@@ -3,6 +3,7 @@ package routes
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/MoinApp/moinapp-server/models"
 	"net/http"
 )
 
@@ -21,4 +22,7 @@ func serve_Users_SignUp(rw http.ResponseWriter, req *http.Request) {
 	}
 
 	fmt.Printf("Create user request: %+v.\n", body)
+	if !models.IsUsernameTaken(body.Name) {
+		models.CreateUser(body.Name, body.Password, body.Email)
+	}
 }
