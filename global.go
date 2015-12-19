@@ -15,5 +15,5 @@ func GetListeningPort() uint {
 	if err != nil {
 		panic(err)
 	}
-	return portNum
+	return uint(portNum)
 }
