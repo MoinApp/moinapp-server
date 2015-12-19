@@ -9,7 +9,7 @@ func IsProduction() bool {
 	return (os.Getenv("PRODUCTION") != "")
 }
 
-func GetListeningPort() uint {
+func GetListeningPort() int {
 	port := os.Getenv("PORT")
 	portNum, err := strconv.Atoi(port)
 	if err != nil {
