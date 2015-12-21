@@ -11,6 +11,7 @@ type addPushTokenRequest struct {
 	Type  string `json:"type"`
 }
 
+// TODO, may need model
 func serveAddPushToken(rw http.ResponseWriter, req *http.Request) {
 	decoder := json.NewDecoder(req.Body)
 	var request addPushTokenRequest

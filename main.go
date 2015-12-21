@@ -1,3 +1,4 @@
+// The moinapp-server package is the executable for the MoinApp server environment.
 package main
 
 import (

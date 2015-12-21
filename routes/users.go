@@ -67,5 +67,6 @@ func serveSearchUser(rw http.ResponseWriter, req *http.Request) {
 }
 
 func serveRecentUsers(rw http.ResponseWriter, req *http.Request) {
+	// TODO
 	fmt.Printf("Requested recents...\n")
 }

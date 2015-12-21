@@ -5,20 +5,20 @@ import (
 	"net/http"
 )
 
-type APIError struct {
+type apiError struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
 	Fields  string `json:"fields"`
 }
 
-func NewAPIError(baseError error) *APIError {
-	return &APIError{
+func newAPIError(baseError error) *apiError {
+	return &apiError{
 		Code:    -1,
 		Message: baseError.Error(),
 	}
 }
 
-func (e *APIError) Send(rw http.ResponseWriter) (int, error) {
+func (e *apiError) Send(rw http.ResponseWriter) (int, error) {
 	jsonError, err := json.Marshal(e)
 	if err != nil {
 		var code int
@@ -35,5 +35,5 @@ func (e *APIError) Send(rw http.ResponseWriter) (int, error) {
 }
 
 func SendAPIError(baseError error, rw http.ResponseWriter) {
-	NewAPIError(baseError).Send(rw)
+	newAPIError(baseError).Send(rw)
 }

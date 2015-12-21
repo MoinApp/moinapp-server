@@ -1,5 +1,7 @@
 package routes
 
+// TODO JSON-Web-Tokens based authentication flow for all endpoints
+
 import (
 	"encoding/json"
 	"fmt"
