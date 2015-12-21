@@ -53,19 +53,14 @@ func serveSearchUser(rw http.ResponseWriter, req *http.Request) {
 	query := uri.Query()
 	username := query.Get("username")
 
-	profiles := [...]userResponse{
-		userResponse{
-			Name: username,
-		},
-		userResponse{
-			Name: username + "1",
-		},
-		userResponse{
-			Name: username + "2",
-		},
+	users := models.FindUsersByName(username)
+	profiles := make([]userResponse, len(users))
+
+	for i, user := range users {
+		profiles[i] = newUserResponse(user)
 	}
 
-	fmt.Printf("Searched for user %T \"%v\"...\n", username, username)
+	fmt.Printf("Searched for user \"%v\": %v result(s).\n", username, len(profiles))
 
 	response, _ := json.Marshal(profiles)
 	rw.Write(response)

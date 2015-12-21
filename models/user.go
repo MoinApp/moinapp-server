@@ -59,3 +59,10 @@ func FindUserByName(username string) *User {
 	db.Where("name LIKE ?", username).First(result)
 	return result
 }
+
+func FindUsersByName(username string) []*User {
+	var result []*User
+
+	db.Where("name LIKE ?", "%"+username+"%").Find(&result)
+	return result
+}
