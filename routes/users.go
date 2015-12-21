@@ -7,6 +7,7 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"net/url"
+	"strconv"
 )
 
 type userResponse struct {
@@ -16,8 +17,10 @@ type userResponse struct {
 }
 
 func newUserResponse(userModel *models.User) userResponse {
+	modelID := strconv.Itoa(int(userModel.ID))
+
 	return userResponse{
-		ID:    string(userModel.ID),
+		ID:    modelID,
 		Name:  userModel.Name,
 		Email: userModel.Email,
 	}
