@@ -6,7 +6,7 @@ import (
 )
 
 type APIError struct {
-	Code    int32
+	Code    int
 	Message string
 	Fields  string
 }
@@ -21,7 +21,14 @@ func NewAPIError(baseError error) *APIError {
 func (e *APIError) Send(rw http.ResponseWriter) (int, error) {
 	jsonError, err := json.Marshal(e)
 	if err != nil {
-		panic(err)
+		var code int
+		if e.Code != -1 {
+			code = e.Code
+		} else {
+			code = http.StatusInternalServerError
+		}
+		http.Error(rw, e.Message, code)
+		return 0, http.ErrNotSupported
 	}
 
 	return rw.Write(jsonError)
