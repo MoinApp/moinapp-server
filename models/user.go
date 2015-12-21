@@ -14,6 +14,16 @@ type User struct {
 	Email    string
 }
 
+func (u *User) IsResult() bool {
+	return (u.Password != nilUser.Password)
+}
+
+var (
+	nilUser = &User{
+		Password: "~error~", // this should be a never-reached hash
+	}
+)
+
 func CreateUser(name, password, email string) *User {
 	// create hashes
 	passwordHash := sha256.Sum256([]byte(password))
