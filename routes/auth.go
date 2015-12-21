@@ -14,10 +14,8 @@ type signUpRequest struct {
 }
 
 type authenticationRequest struct {
-	// Name of the user.
-	Name string
-	// Password for the user.
-	Password string
+	Name     string `json:"name"`
+	Password string `json:"password"`
 }
 
 type sessionResponse struct {

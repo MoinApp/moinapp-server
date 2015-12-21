@@ -6,9 +6,9 @@ import (
 )
 
 type APIError struct {
-	Code    int
-	Message string
-	Fields  string
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+	Fields  string `json:"fields"`
 }
 
 func NewAPIError(baseError error) *APIError {
