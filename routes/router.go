@@ -20,6 +20,7 @@ func InitRouter() {
 	router.HandleFunc("/", serve_Root).Methods("GET", "POST")
 
 	router.HandleFunc("/users/signup", serve_Users_SignUp).Methods("POST")
+	router.HandleFunc("/users/auth", serve_Users_Auth).Methods("POST")
 }
 
 func getListeningPort() uint {

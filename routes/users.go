@@ -13,6 +13,13 @@ type user_signup_Request struct {
 	Email    string `json:"email"`
 }
 
+type user_Auth_Request struct {
+	// Name of the user.
+	Name string
+	// Password for the user.
+	Password string
+}
+
 type session_Response struct {
 	// Token for a session for this user.
 	SessionToken string `json:"session_token"`
@@ -39,5 +46,18 @@ func serve_Users_SignUp(rw http.ResponseWriter, req *http.Request) {
 }
 
 func serve_Users_Auth(rw http.ResponseWriter, req *http.Request) {
+	decoder := json.NewDecoder(req.Body)
+	var body user_Auth_Request
+	err := decoder.Decode(&body)
+	if err != nil {
+		SendAPIError(err, rw)
+		return
+	}
 
+	fmt.Printf("Auth request: %+v\n", body)
+
+	data, _ := json.Marshal(session_Response{
+		SessionToken: "null",
+	})
+	rw.Write(data)
 }
