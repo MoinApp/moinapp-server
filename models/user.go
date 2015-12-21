@@ -15,20 +15,21 @@ type User struct {
 }
 
 func (u *User) IsResult() bool {
-	return (u.Password != nilUser.Password)
+	fmt.Printf("Nil check on: %+v\n", u)
+	return (u.Password != nilUser().Password)
 }
 
-var (
-	nilUser = &User{
+func nilUser() *User {
+	return &User{
 		Password: "~error~", // this should be a never-reached hash
 	}
-)
+}
 
 func IsUsernameTaken(username string) bool {
 	var query = &User{
 		Name: username,
 	}
-	var result = nilUser
+	var result = nilUser()
 
 	db.Where(query).First(result)
 	return result.IsResult()
@@ -53,11 +54,8 @@ func CreateUser(name, password, email string) *User {
 }
 
 func FindUserByName(username string) *User {
-	var query = &User{
-		Name: username,
-	}
-	var result = nilUser
+	var result = nilUser()
 
-	db.Where(query).First(result)
+	db.Where("name LIKE ?", username).First(result)
 	return result
 }
