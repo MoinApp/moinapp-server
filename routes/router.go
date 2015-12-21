@@ -19,10 +19,15 @@ func InitRouter() {
 
 	router.HandleFunc("/", serveRoot).Methods("GET", "POST")
 
-	router.HandleFunc("/moin", serveMoin)
+	router.HandleFunc("/moin", serveMoin).Methods("POST")
 
 	router.HandleFunc("/users/signup", serveSignUp).Methods("POST")
 	router.HandleFunc("/users/auth", serveAuthentication).Methods("POST")
+	router.HandleFunc("/users", serveSearchUser).Methods("GET")
+	router.HandleFunc("/users/recents", serveRecentUsers).Methods("GET")
+	router.HandleFunc("/users/addPush", serveAddPushToken).Methods("POST")
+
+	router.HandleFunc("/user/{username}", serveGetUserProfile).Methods("GET")
 }
 
 func getListeningPort() uint {
