@@ -3,6 +3,7 @@ package models
 import (
 	"crypto/md5"
 	"crypto/sha256"
+	"fmt"
 	"github.com/jinzhu/gorm"
 )
 
@@ -16,9 +17,9 @@ type User struct {
 func CreateUser(name, password, email string) *User {
 	// create hashes
 	passwordHash := sha256.Sum256([]byte(password))
-	password = string(passwordHash[:sha256.Size])
+	password = fmt.Sprintf("%x", passwordHash[:sha256.Size])
 	emailHash := md5.Sum([]byte(email))
-	email = string(emailHash[:md5.Size])
+	email = fmt.Sprintf("%x", emailHash[:md5.Size])
 
 	user := &User{
 		Name:     name,
