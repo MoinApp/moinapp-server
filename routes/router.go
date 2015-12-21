@@ -17,10 +17,12 @@ var router *mux.Router
 func InitRouter() {
 	router = mux.NewRouter()
 
-	router.HandleFunc("/", serve_Root).Methods("GET", "POST")
+	router.HandleFunc("/", serveRoot).Methods("GET", "POST")
 
-	router.HandleFunc("/users/signup", serve_Users_SignUp).Methods("POST")
-	router.HandleFunc("/users/auth", serve_Users_Auth).Methods("POST")
+	router.HandleFunc("/moin", serveMoin)
+
+	router.HandleFunc("/users/signup", serveSignUp).Methods("POST")
+	router.HandleFunc("/users/auth", serveAuthentication).Methods("POST")
 }
 
 func getListeningPort() uint {
@@ -39,11 +41,11 @@ func StartListening() {
 	http.ListenAndServe(listenFormat, nil)
 }
 
-func http_redirect(w http.ResponseWriter, newLocation string) {
+func httpRedirect(w http.ResponseWriter, newLocation string) {
 	w.Header().Add("Location", newLocation)
 	w.WriteHeader(http.StatusFound)
 }
 
-func serve_Root(w http.ResponseWriter, r *http.Request) {
-	http_redirect(w, homeRedirectURL)
+func serveRoot(w http.ResponseWriter, r *http.Request) {
+	httpRedirect(w, homeRedirectURL)
 }

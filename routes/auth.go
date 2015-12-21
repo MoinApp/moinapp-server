@@ -7,27 +7,27 @@ import (
 	"net/http"
 )
 
-type user_signup_Request struct {
+type signUpRequest struct {
 	Name     string `json:"name"`
 	Password string `json:"password"`
 	Email    string `json:"email"`
 }
 
-type user_Auth_Request struct {
+type authenticationRequest struct {
 	// Name of the user.
 	Name string
 	// Password for the user.
 	Password string
 }
 
-type session_Response struct {
+type sessionResponse struct {
 	// Token for a session for this user.
 	SessionToken string `json:"session_token"`
 }
 
-func serve_Users_SignUp(rw http.ResponseWriter, req *http.Request) {
+func serveSignUp(rw http.ResponseWriter, req *http.Request) {
 	decoder := json.NewDecoder(req.Body)
-	var body user_signup_Request
+	var body signUpRequest
 	err := decoder.Decode(&body)
 	if err != nil {
 		SendAPIError(err, rw)
@@ -38,16 +38,16 @@ func serve_Users_SignUp(rw http.ResponseWriter, req *http.Request) {
 	if !models.IsUsernameTaken(body.Name) {
 		models.CreateUser(body.Name, body.Password, body.Email)
 
-		data, _ := json.Marshal(session_Response{
+		data, _ := json.Marshal(sessionResponse{
 			SessionToken: "null",
 		})
 		rw.Write(data)
 	}
 }
 
-func serve_Users_Auth(rw http.ResponseWriter, req *http.Request) {
+func serveAuthentication(rw http.ResponseWriter, req *http.Request) {
 	decoder := json.NewDecoder(req.Body)
-	var body user_Auth_Request
+	var body authenticationRequest
 	err := decoder.Decode(&body)
 	if err != nil {
 		SendAPIError(err, rw)
@@ -56,7 +56,7 @@ func serve_Users_Auth(rw http.ResponseWriter, req *http.Request) {
 
 	fmt.Printf("Auth request: %+v\n", body)
 
-	data, _ := json.Marshal(session_Response{
+	data, _ := json.Marshal(sessionResponse{
 		SessionToken: "null",
 	})
 	rw.Write(data)
