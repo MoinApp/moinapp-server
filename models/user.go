@@ -24,6 +24,16 @@ var (
 	}
 )
 
+func IsUsernameTaken(username string) bool {
+	var query = &User{
+		Name: username,
+	}
+	var result = nilUser
+
+	db.Where(query).First(result)
+	return result.IsResult()
+}
+
 func CreateUser(name, password, email string) *User {
 	// create hashes
 	passwordHash := sha256.Sum256([]byte(password))
@@ -42,12 +52,12 @@ func CreateUser(name, password, email string) *User {
 	return user
 }
 
-func IsUsernameTaken(username string) bool {
+func FindUserByName(username string) *User {
 	var query = &User{
 		Name: username,
 	}
-	var result = &User{Password: "error"}
+	var result = nilUser
 
 	db.Where(query).First(result)
-	return (result.Password != "error")
+	return result
 }

@@ -3,7 +3,7 @@ package routes
 import (
 	"encoding/json"
 	"fmt"
-	//"github.com/MoinApp/moinapp-server/models"
+	"github.com/MoinApp/moinapp-server/models"
 	"github.com/gorilla/mux"
 	"net/http"
 	"net/url"
@@ -15,15 +15,26 @@ type userResponse struct {
 	Email string `json:"email"`
 }
 
+func newUserResponse(userModel *models.User) userResponse {
+	return userResponse{
+		ID:    string(userModel.ID),
+		Name:  userModel.Name,
+		Email: userModel.Email,
+	}
+}
+
 func serveGetUserProfile(rw http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
 	username := vars["username"]
 
-	profile := userResponse{
-		ID:    "",
-		Name:  username,
-		Email: "",
+	user := models.FindUserByName(username)
+	if !user.IsResult() {
+		fmt.Printf("Requested user profile for \"%v\": No results found.", username)
+		// TODO error message
+		return
 	}
+
+	profile := newUserResponse(user)
 	fmt.Printf("Requested user profile of \"%v\": %+v\n", username, profile)
 
 	response, _ := json.Marshal(profile)
