@@ -10,6 +10,7 @@ import (
 
 var db *gorm.DB
 
+// Initializes the database connection and returns the handle. This may crash if the connection cannot be established.
 func InitDB(isProduction bool) *gorm.DB {
 	if db == nil {
 		var dbConnection gorm.DB
@@ -42,5 +43,8 @@ func getDatabaseURL() string {
 }
 
 func TestDB() bool {
-	return (DB().DB().Ping() == nil)
+	if db == nil {
+		return false
+	}
+	return (db.DB().Ping() == nil)
 }
