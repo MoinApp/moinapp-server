@@ -16,6 +16,7 @@ var (
 	httpsOnlyCheckEnabled = true
 )
 
+// setHttpsCheckState sets the flag whether any request should be checked to be made via the HTTPS-protocol
 func setHttpsCheckState(httpsCheckEnabled bool) {
 	httpsOnlyCheckEnabled = httpsCheckEnabled
 }
@@ -27,21 +28,6 @@ func defaultHandlerF(nextFunc func(http.ResponseWriter, *http.Request)) http.Han
 
 func defaultHandler(next http.Handler) http.Handler {
 	return httpsCheckHandler(defaultTimeoutHandler(defaultHeaderHandler(next)))
-}
-
-func defaultTimeoutHandler(next http.Handler) http.Handler {
-	return http.TimeoutHandler(next, timeout, "Response timeout reached.")
-}
-
-func defaultHeaderHandler(next http.Handler) http.Handler {
-	fn := func(rw http.ResponseWriter, req *http.Request) {
-		rw.Header().Add("Content-Type", "application/json")
-		rw.Header().Add("X-Served-by", "moinapp-server")
-
-		next.ServeHTTP(rw, req)
-	}
-
-	return http.HandlerFunc(fn)
 }
 
 func httpsCheckHandler(next http.Handler) http.Handler {
@@ -62,6 +48,21 @@ func httpsCheckHandler(next http.Handler) http.Handler {
 				}
 			}
 		}
+
+		next.ServeHTTP(rw, req)
+	}
+
+	return http.HandlerFunc(fn)
+}
+
+func defaultTimeoutHandler(next http.Handler) http.Handler {
+	return http.TimeoutHandler(next, timeout, "Response timeout reached.")
+}
+
+func defaultHeaderHandler(next http.Handler) http.Handler {
+	fn := func(rw http.ResponseWriter, req *http.Request) {
+		rw.Header().Add("Content-Type", "application/json")
+		rw.Header().Add("X-Served-by", "moinapp-server")
 
 		next.ServeHTTP(rw, req)
 	}
