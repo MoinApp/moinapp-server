@@ -17,17 +17,17 @@ var router *mux.Router
 func InitRouter() {
 	router = mux.NewRouter()
 
-	router.HandleFunc("/", serveRoot).Methods("GET", "POST")
+	router.Handle("/", defaultHandler(http.RedirectHandler(homeRedirectURL, http.StatusFound))).Methods("GET", "POST")
 
-	router.HandleFunc("/moin", serveMoin).Methods("POST")
+	router.Handle("/moin", defaultHandlerF(serveMoin)).Methods("POST")
 
-	router.HandleFunc("/users/signup", serveSignUp).Methods("POST")
-	router.HandleFunc("/users/auth", serveAuthentication).Methods("POST")
-	router.HandleFunc("/users", serveSearchUser).Methods("GET")
-	router.HandleFunc("/users/recents", serveRecentUsers).Methods("GET")
-	router.HandleFunc("/users/addPush", serveAddPushToken).Methods("POST")
+	router.Handle("/users/signup", defaultHandlerF(serveSignUp)).Methods("POST")
+	router.Handle("/users/auth", defaultHandlerF(serveAuthentication)).Methods("POST")
+	router.Handle("/users", defaultHandlerF(serveSearchUser)).Methods("GET")
+	router.Handle("/users/recents", defaultHandlerF(serveRecentUsers)).Methods("GET")
+	router.Handle("/users/addPush", defaultHandlerF(serveAddPushToken)).Methods("POST")
 
-	router.HandleFunc("/user/{username}", serveGetUserProfile).Methods("GET")
+	router.Handle("/user/{username}", defaultHandlerF(serveGetUserProfile)).Methods("GET")
 }
 
 func getListeningPort() uint {
@@ -44,13 +44,4 @@ func StartListening() {
 
 	http.Handle("/", router)
 	http.ListenAndServe(listenFormat, nil)
-}
-
-func httpRedirect(w http.ResponseWriter, newLocation string) {
-	w.Header().Add("Location", newLocation)
-	w.WriteHeader(http.StatusFound)
-}
-
-func serveRoot(w http.ResponseWriter, r *http.Request) {
-	httpRedirect(w, homeRedirectURL)
 }
