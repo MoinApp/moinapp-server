@@ -15,6 +15,9 @@ func isProduction() bool {
 func main() {
 	log.Println("Hello! Booting...")
 	models.InitDB(isProduction())
+	if !models.TestDB() {
+		log.Fatal("Database is not connected.")
+	}
 	routes.InitRouter()
 
 	log.Println("Ready.")
