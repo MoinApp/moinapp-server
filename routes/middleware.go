@@ -27,6 +27,10 @@ func defaultHandlerF(nextFunc func(http.ResponseWriter, *http.Request)) http.Han
 }
 
 func defaultHandler(next http.Handler) http.Handler {
+	return httpsCheckHandler(securityHandler(defaultTimeoutHandler(defaultHeaderHandler(next))))
+}
+
+func defaultUnauthorizedHanldler(next http.Handler) http.Handler {
 	return httpsCheckHandler(defaultTimeoutHandler(defaultHeaderHandler(next)))
 }
 
@@ -63,6 +67,23 @@ func defaultHeaderHandler(next http.Handler) http.Handler {
 	fn := func(rw http.ResponseWriter, req *http.Request) {
 		rw.Header().Add("Content-Type", "application/json")
 		rw.Header().Add("X-Served-by", "moinapp-server")
+
+		next.ServeHTTP(rw, req)
+	}
+
+	return http.HandlerFunc(fn)
+}
+
+func securityHandler(next http.Handler) http.Handler {
+	fn := func(rw http.ResponseWriter, req *http.Request) {
+		token := req.Header.Get("Session")
+
+		// TODO: Check
+		if token == "" {
+			data := []byte("Authentication required.")
+			rw.Write(data)
+			return
+		}
 
 		next.ServeHTTP(rw, req)
 	}
