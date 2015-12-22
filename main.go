@@ -18,7 +18,7 @@ func main() {
 	if !models.TestDB() {
 		log.Fatal("Database is not connected.")
 	}
-	routes.InitRouter()
+	routes.InitRouter(isProduction())
 
 	log.Println("Ready.")
 	routes.StartListening()

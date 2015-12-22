@@ -2,6 +2,7 @@ package routes
 
 import (
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -9,13 +10,21 @@ const (
 	timeout = 1000 * time.Millisecond
 )
 
+var (
+	httpsOnlyCheckEnabled = true
+)
+
+func setHttpsCheckState(httpsCheckEnabled bool) {
+	httpsOnlyCheckEnabled = httpsCheckEnabled
+}
+
 func defaultHandlerF(nextFunc func(http.ResponseWriter, *http.Request)) http.Handler {
 	next := http.HandlerFunc(nextFunc)
 	return defaultHandler(next)
 }
 
 func defaultHandler(next http.Handler) http.Handler {
-	return defaultTimeoutHandler(defaultHeaderHandler(next))
+	return httpsCheckHandler(defaultTimeoutHandler(defaultHeaderHandler(next)))
 }
 
 func defaultTimeoutHandler(next http.Handler) http.Handler {
@@ -26,6 +35,31 @@ func defaultHeaderHandler(next http.Handler) http.Handler {
 	fn := func(rw http.ResponseWriter, req *http.Request) {
 		rw.Header().Add("Content-Type", "application/json")
 		rw.Header().Add("X-Served-by", "moinapp-server")
+
+		next.ServeHTTP(rw, req)
+	}
+
+	return http.HandlerFunc(fn)
+}
+
+func httpsCheckHandler(next http.Handler) http.Handler {
+	fn := func(rw http.ResponseWriter, req *http.Request) {
+		// only check if it is enabled
+		if httpsOnlyCheckEnabled {
+			// get the index in "HTTP/1.1"
+			slashIndex := strings.Index(req.Proto, "/")
+
+			// maybe we got something different than a HTTP protocol?
+			if slashIndex != -1 {
+				protocol := strings.ToLower(req.Proto[:slashIndex])
+
+				if protocol != "https" {
+					data := []byte("Only https allowed")
+					rw.Write(data)
+					return
+				}
+			}
+		}
 
 		next.ServeHTTP(rw, req)
 	}
