@@ -1,5 +1,7 @@
 package routes
 
+// BUG(sgade): The middleware errors are plain text. They should be JSON APIErrors.
+
 import (
 	"net/http"
 	"strings"

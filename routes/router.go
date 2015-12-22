@@ -1,7 +1,5 @@
 package routes
 
-// BUG(sgade): The middleware errors are plain text. They should be JSON APIErrors.
-
 import (
 	"fmt"
 	"github.com/gorilla/mux"
