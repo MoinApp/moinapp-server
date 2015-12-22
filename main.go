@@ -2,9 +2,9 @@
 package main
 
 import (
-	"fmt"
 	"github.com/MoinApp/moinapp-server/models"
 	"github.com/MoinApp/moinapp-server/routes"
+	"log"
 	"os"
 )
 
@@ -13,11 +13,10 @@ func isProduction() bool {
 }
 
 func main() {
-	fmt.Printf("Starting...")
-	models.TestDB()
+	log.Println("Hello! Booting...")
 	models.InitDB(isProduction())
 	routes.InitRouter()
 
-	fmt.Printf("\nReady.\n")
+	log.Println("Ready.")
 	routes.StartListening()
 }
