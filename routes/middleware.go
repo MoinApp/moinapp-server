@@ -30,7 +30,7 @@ func defaultHandler(next http.Handler) http.Handler {
 	return httpsCheckHandler(securityHandler(defaultTimeoutHandler(defaultHeaderHandler(next))))
 }
 
-func defaultUnauthorizedHanldler(next http.Handler) http.Handler {
+func defaultUnauthorizedHandler(next http.Handler) http.Handler {
 	return httpsCheckHandler(defaultTimeoutHandler(defaultHeaderHandler(next)))
 }
 
