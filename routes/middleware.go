@@ -44,11 +44,11 @@ func defaultHandlerF(nextFunc func(http.ResponseWriter, *http.Request)) http.Han
 }
 
 func defaultHandler(next http.Handler) http.Handler {
-	return httpsCheckHandler(defaultGzipCompressionHandler(securityHandler(defaultTimeoutHandler(defaultHeaderHandler(next)))))
+	return httpsCheckHandler(gzipCompressionHandler(securityHandler(timeoutHandler(headerHandler(next)))))
 }
 
 func defaultUnauthorizedHandler(next http.Handler) http.Handler {
-	return httpsCheckHandler(defaultGzipCompressionHandler(defaultTimeoutHandler(defaultHeaderHandler(next))))
+	return httpsCheckHandler(gzipCompressionHandler(timeoutHandler(headerHandler(next))))
 }
 
 func httpsCheckHandler(next http.Handler) http.Handler {
@@ -76,7 +76,7 @@ func httpsCheckHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(fn)
 }
 
-func defaultGzipCompressionHandler(next http.Handler) http.Handler {
+func gzipCompressionHandler(next http.Handler) http.Handler {
 	// with help from https://gist.github.com/the42/1956518
 	fn := func(rw http.ResponseWriter, req *http.Request) {
 		if !strings.Contains(strings.ToLower(req.Header.Get("Accept-Encoding")), "gzip") {
@@ -99,11 +99,11 @@ func defaultGzipCompressionHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(fn)
 }
 
-func defaultTimeoutHandler(next http.Handler) http.Handler {
+func timeoutHandler(next http.Handler) http.Handler {
 	return http.TimeoutHandler(next, timeout, "Response timeout reached.")
 }
 
-func defaultHeaderHandler(next http.Handler) http.Handler {
+func headerHandler(next http.Handler) http.Handler {
 	fn := func(rw http.ResponseWriter, req *http.Request) {
 		rw.Header().Set("Content-Type", "application/json")
 		rw.Header().Set("X-Served-by", "moinapp-server")
