@@ -3,6 +3,8 @@ package routes
 // BUG(sgade): The middleware errors are plain text. They should be JSON APIErrors.
 
 import (
+	"compress/gzip"
+	"io"
 	"net/http"
 	"strings"
 	"time"
@@ -16,6 +18,21 @@ var (
 	httpsOnlyCheckEnabled = true
 )
 
+type gzipResponseWriter struct {
+	// Writer is the gzip compressing io.Writer.
+	io.Writer
+	// ResponseWriter is the standard response writer for the http connection.
+	http.ResponseWriter
+}
+
+func (w gzipResponseWriter) Write(b []byte) (int, error) {
+	if w.Header().Get("Content-Type") == "" {
+		w.Header().Set("Content-Type", http.DetectContentType(b))
+	}
+
+	return w.Writer.Write(b)
+}
+
 // setHttpsCheckState sets the flag whether any request should be checked to be made via the HTTPS-protocol
 func setHttpsCheckState(httpsCheckEnabled bool) {
 	httpsOnlyCheckEnabled = httpsCheckEnabled
@@ -27,11 +44,11 @@ func defaultHandlerF(nextFunc func(http.ResponseWriter, *http.Request)) http.Han
 }
 
 func defaultHandler(next http.Handler) http.Handler {
-	return httpsCheckHandler(securityHandler(defaultTimeoutHandler(defaultHeaderHandler(next))))
+	return httpsCheckHandler(defaultGzipCompressionHandler(securityHandler(defaultTimeoutHandler(defaultHeaderHandler(next)))))
 }
 
 func defaultUnauthorizedHandler(next http.Handler) http.Handler {
-	return httpsCheckHandler(defaultTimeoutHandler(defaultHeaderHandler(next)))
+	return httpsCheckHandler(defaultGzipCompressionHandler(defaultTimeoutHandler(defaultHeaderHandler(next))))
 }
 
 func httpsCheckHandler(next http.Handler) http.Handler {
@@ -59,14 +76,37 @@ func httpsCheckHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(fn)
 }
 
+func defaultGzipCompressionHandler(next http.Handler) http.Handler {
+	// with help from https://gist.github.com/the42/1956518
+	fn := func(rw http.ResponseWriter, req *http.Request) {
+		if !strings.Contains(strings.ToLower(req.Header.Get("Accept-Encoding")), "gzip") {
+			next.ServeHTTP(rw, req)
+			return
+		}
+
+		rw.Header().Set("Content-Encoding", "gzip")
+
+		compressor := gzip.NewWriter(rw)
+		defer compressor.Close()
+		newWriter := gzipResponseWriter{
+			Writer:         compressor,
+			ResponseWriter: rw,
+		}
+
+		next.ServeHTTP(newWriter, req)
+	}
+
+	return http.HandlerFunc(fn)
+}
+
 func defaultTimeoutHandler(next http.Handler) http.Handler {
 	return http.TimeoutHandler(next, timeout, "Response timeout reached.")
 }
 
 func defaultHeaderHandler(next http.Handler) http.Handler {
 	fn := func(rw http.ResponseWriter, req *http.Request) {
-		rw.Header().Add("Content-Type", "application/json")
-		rw.Header().Add("X-Served-by", "moinapp-server")
+		rw.Header().Set("Content-Type", "application/json")
+		rw.Header().Set("X-Served-by", "moinapp-server")
 
 		next.ServeHTTP(rw, req)
 	}
