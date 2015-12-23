@@ -12,6 +12,8 @@ type User struct {
 	Name     string
 	Password string
 	Email    string
+
+	PrivateKey string `sql:"size:4096"`
 }
 
 func (u *User) IsResult() bool {
@@ -65,4 +67,16 @@ func FindUsersByName(username string) []*User {
 
 	db.Where("name LIKE ?", "%"+username+"%").Find(&result)
 	return result
+}
+
+func FindUserById(id interface{}) *User {
+	var result = nilUser()
+
+	db.First(result, id)
+
+	return result
+}
+
+func SaveUser(user *User) {
+	db.Save(user)
 }

@@ -6,12 +6,17 @@ import (
 	"compress/gzip"
 	"io"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
+
+	"github.com/MoinApp/moinapp-server/auth"
+	"github.com/MoinApp/moinapp-server/models"
 )
 
 const (
-	timeout = 1000 * time.Millisecond
+	timeout           = 1000 * time.Millisecond
+	requestUserHeader = "_moinapp_user"
 )
 
 var (
@@ -116,12 +121,12 @@ func headerHandler(next http.Handler) http.Handler {
 
 func securityHandler(next http.Handler) http.Handler {
 	fn := func(rw http.ResponseWriter, req *http.Request) {
-		token := req.Header.Get("Session")
+		user, err := auth.ValidateSession(req)
 
-		// TODO: Check
-		if token == "" {
-			data := []byte("Authentication required.")
-			rw.Write(data)
+		req.Header.Add(requestUserHeader, strconv.Itoa(int(user.ID)))
+
+		if err != nil {
+			rw.Write([]byte(err.Error()))
 			return
 		}
 
@@ -129,4 +134,10 @@ func securityHandler(next http.Handler) http.Handler {
 	}
 
 	return http.HandlerFunc(fn)
+}
+
+func getUserFromRequest(req *http.Request) *models.User {
+	userID := req.Header.Get(requestUserHeader)
+
+	return models.FindUserById(userID)
 }
