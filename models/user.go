@@ -77,6 +77,19 @@ func FindUserById(id interface{}) *User {
 	return result
 }
 
+func FindUserWithCredentials(username, password string) *User {
+	var result = nilUser()
+
+	query := &User{
+		Name:     username,
+		Password: password,
+	}
+
+	db.Where(query).First(result)
+
+	return result
+}
+
 func SaveUser(user *User) {
 	db.Save(user)
 }

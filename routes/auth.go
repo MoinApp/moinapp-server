@@ -4,7 +4,9 @@ package routes
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
+	"github.com/MoinApp/moinapp-server/auth"
 	"github.com/MoinApp/moinapp-server/models"
 	"net/http"
 )
@@ -36,12 +38,10 @@ func serveSignUp(rw http.ResponseWriter, req *http.Request) {
 
 	fmt.Printf("Create user request: %+v.\n", body)
 	if !models.IsUsernameTaken(body.Name) {
-		models.CreateUser(body.Name, body.Password, body.Email)
+		user := models.CreateUser(body.Name, body.Password, body.Email)
 
-		data, _ := json.Marshal(sessionResponse{
-			SessionToken: "null",
-		})
-		rw.Write(data)
+		tokenResponse := getSessionResponseTokenForUser(user)
+		rw.Write(tokenResponse)
 	}
 }
 
@@ -55,9 +55,31 @@ func serveAuthentication(rw http.ResponseWriter, req *http.Request) {
 	}
 
 	fmt.Printf("Auth request: %+v\n", body)
+	user := models.FindUserWithCredentials(body.Name, body.Password)
 
-	data, _ := json.Marshal(sessionResponse{
-		SessionToken: "null",
+	if user == nil {
+		// TODO: WTF
+		panic(errors.New("Invalid credentials"))
+	}
+
+	tokenResponse := getSessionResponseTokenForUser(user)
+	rw.Write(tokenResponse)
+}
+
+func getSessionResponseTokenForUser(user *models.User) []byte {
+	token, err := auth.GenerateJWTToken(*user)
+	if err != nil {
+		// TODO: WTF
+		panic(err)
+	}
+
+	data, err := json.Marshal(sessionResponse{
+		SessionToken: token,
 	})
-	rw.Write(data)
+	if err != nil {
+		// TODO: WTF
+		panic(err)
+	}
+
+	return data
 }
