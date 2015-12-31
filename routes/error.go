@@ -18,20 +18,17 @@ func newAPIError(baseError error) *apiError {
 	}
 }
 
-func (e *apiError) Send(rw http.ResponseWriter) (int, error) {
-	jsonError, err := json.Marshal(e)
-	if err != nil {
-		var code int
-		if e.Code != -1 {
-			code = e.Code
-		} else {
-			code = http.StatusInternalServerError
-		}
-		http.Error(rw, e.Message, code)
-		return 0, http.ErrNotSupported
+func (e *apiError) Send(rw http.ResponseWriter) {
+	if e.Code == -1 {
+		e.Code = http.StatusBadRequest
 	}
 
-	return rw.Write(jsonError)
+	jsonError, err := json.Marshal(e)
+	if err != nil {
+		jsonError = []byte(e.Message)
+	}
+
+	http.Error(rw, string(jsonError), e.Code)
 }
 
 func SendAPIError(baseError error, rw http.ResponseWriter) {
