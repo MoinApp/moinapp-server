@@ -85,13 +85,17 @@ func httpsCheckHandler(next http.Handler) http.Handler {
 func gzipCompressionHandler(next http.Handler) http.Handler {
 	// with help from https://gist.github.com/the42/1956518
 	fn := func(rw http.ResponseWriter, req *http.Request) {
+		// only send gzip if supported by the requesting client
 		if !strings.Contains(strings.ToLower(req.Header.Get("Accept-Encoding")), "gzip") {
+			// if its not, then serve normal request
 			next.ServeHTTP(rw, req)
 			return
 		}
 
+		// add content-encoding header
 		rw.Header().Set("Content-Encoding", "gzip")
 
+		// create compressor for this request
 		compressor := gzip.NewWriter(rw)
 		defer compressor.Close()
 		newWriter := gzipResponseWriter{
@@ -99,6 +103,7 @@ func gzipCompressionHandler(next http.Handler) http.Handler {
 			ResponseWriter: rw,
 		}
 
+		// serve with new gzip compressor
 		next.ServeHTTP(newWriter, req)
 	}
 
