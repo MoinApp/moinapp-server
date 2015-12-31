@@ -70,8 +70,7 @@ func httpsCheckHandler(next http.Handler) http.Handler {
 				protocol := strings.ToLower(req.Proto[:slashIndex])
 
 				if protocol != "https" {
-					data := []byte("Only https allowed")
-					rw.Write(data)
+					http.Error(rw, "Only https allowed", http.StatusForbidden)
 					return
 				}
 			}
@@ -128,7 +127,7 @@ func securityHandler(next http.Handler) http.Handler {
 		req.Header.Add(requestUserHeader, strconv.Itoa(int(user.ID)))
 
 		if err != nil {
-			rw.Write([]byte(err.Error()))
+			http.Error(rw, err.Error(), http.StatusForbidden)
 			return
 		}
 
