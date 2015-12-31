@@ -2,7 +2,9 @@ package routes
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
+	"github.com/MoinApp/moinapp-server/models"
 	"net/http"
 )
 
@@ -11,7 +13,15 @@ type addPushTokenRequest struct {
 	Type  string `json:"type"`
 }
 
-// TODO, may need model
+const (
+	APNTokenType = "apns"
+	GCMTokenType = "gcm"
+)
+
+var (
+	ErrInvalidTokenType = errors.New("Invalid token type.")
+)
+
 func serveAddPushToken(rw http.ResponseWriter, req *http.Request) {
 	decoder := json.NewDecoder(req.Body)
 	var request addPushTokenRequest
@@ -21,5 +31,22 @@ func serveAddPushToken(rw http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	var tokenDBType models.TokenType
+	switch request.Type {
+	case APNTokenType:
+		tokenDBType = models.APNToken
+	case GCMTokenType:
+		tokenDBType = models.GCMToken
+	default:
+		SendAPIError(ErrInvalidTokenType, rw)
+		return
+	}
+
 	fmt.Printf("Add Push Token request: %+v\n", request)
+	token := models.NewPushToken(tokenDBType, request.Token)
+	currentUser := getUserFromRequest(req)
+
+	currentUser.AddPushToken(token)
+
+	rw.WriteHeader(http.StatusOK)
 }
