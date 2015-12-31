@@ -2,12 +2,17 @@ package routes
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/MoinApp/moinapp-server/models"
 	"github.com/gorilla/mux"
 	"net/http"
 	"net/url"
 	"strconv"
+)
+
+var (
+	ErrUserNotFound = errors.New("User not found.")
 )
 
 type userResponse struct {
@@ -32,8 +37,8 @@ func serveGetUserProfile(rw http.ResponseWriter, req *http.Request) {
 
 	user := models.FindUserByName(username)
 	if !user.IsResult() {
-		fmt.Printf("Requested user profile for \"%v\": No results found.", username)
-		// TODO error message
+		fmt.Printf("Requested user profile for \"%v\": No results found.\n", username)
+		SendAPIError(ErrUserNotFound, rw)
 		return
 	}
 
