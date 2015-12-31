@@ -13,11 +13,10 @@ const (
 
 type PushToken struct {
 	gorm.Model
-	User   User
 	UserID uint
 
-	Token string
-	Type  TokenType
+	Token string    `sql:"not null;unique"`
+	Type  TokenType `sql:"not null"`
 }
 
 func NewPushToken(t TokenType, token string) *PushToken {

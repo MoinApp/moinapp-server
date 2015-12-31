@@ -10,9 +10,9 @@ import (
 type User struct {
 	gorm.Model
 
-	Name       string
-	Password   string
-	Email      string
+	Name       string `sql:"unique; index"`
+	Password   string `sql:"not null"`
+	Email      string `sql:"not null"`
 	PushTokens []PushToken
 	PrivateKey string `sql:"size:4096"`
 }
