@@ -9,10 +9,11 @@ import (
 
 type User struct {
 	gorm.Model
-	Name     string
-	Password string
-	Email    string
 
+	Name       string
+	Password   string
+	Email      string
+	PushTokens []PushToken
 	PrivateKey string `sql:"size:4096"`
 }
 
@@ -25,6 +26,20 @@ func nilUser() *User {
 	return &User{
 		Password: "~error~", // this should be a never-reached hash
 	}
+}
+
+func (u *User) AddPushToken(token *PushToken) *User {
+	db.Model(&u).Association("PushTokens").Append(token)
+
+	return u
+}
+
+func (u *User) GetPushTokens() []PushToken {
+	var tokens []PushToken
+
+	db.Model(&u).Related(&tokens)
+
+	return tokens
 }
 
 func IsUsernameTaken(username string) bool {
