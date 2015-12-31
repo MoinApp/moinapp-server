@@ -6,12 +6,14 @@ import (
 	"compress/gzip"
 	"io"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/MoinApp/moinapp-server/auth"
 	"github.com/MoinApp/moinapp-server/models"
+	"github.com/gorilla/handlers"
 )
 
 const (
@@ -49,11 +51,11 @@ func defaultHandlerF(nextFunc func(http.ResponseWriter, *http.Request)) http.Han
 }
 
 func defaultHandler(next http.Handler) http.Handler {
-	return httpsCheckHandler(gzipCompressionHandler(securityHandler(timeoutHandler(headerHandler(next)))))
+	return httpsCheckHandler(gzipCompressionHandler(handlers.LoggingHandler(os.Stdout, securityHandler(timeoutHandler(headerHandler(next))))))
 }
 
 func defaultUnauthorizedHandler(next http.Handler) http.Handler {
-	return httpsCheckHandler(gzipCompressionHandler(timeoutHandler(headerHandler(next))))
+	return httpsCheckHandler(gzipCompressionHandler(handlers.LoggingHandler(os.Stdout, timeoutHandler(headerHandler(next)))))
 }
 
 func httpsCheckHandler(next http.Handler) http.Handler {
