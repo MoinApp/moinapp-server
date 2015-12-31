@@ -17,6 +17,7 @@ var router *mux.Router
 func InitRouter(httpsOnly bool) {
 	setHttpsCheckState(httpsOnly)
 	router = mux.NewRouter()
+	router.StrictSlash(true)
 
 	router.Handle("/", defaultUnauthorizedHandler(http.RedirectHandler(homeRedirectURL, http.StatusFound))).Methods("GET", "POST")
 
