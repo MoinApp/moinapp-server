@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"github.com/MoinApp/moinapp-server/push"
 )
 
 type moinRequest struct {
@@ -21,4 +23,9 @@ func serveMoin(rw http.ResponseWriter, req *http.Request) {
 	}
 
 	fmt.Printf("Moin request: %+v\n", body)
+
+	tokens := getUserFromRequest(req).GetPushTokens()
+	for _, token := range tokens {
+		push.SendPushNotification(token, "Moin")
+	}
 }
