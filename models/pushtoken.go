@@ -7,8 +7,8 @@ import (
 type TokenType uint
 
 const (
-	APNType TokenType = 0
-	GCMType           = 1
+	APNToken TokenType = 0
+	GCMToken           = 1
 )
 
 type PushToken struct {
