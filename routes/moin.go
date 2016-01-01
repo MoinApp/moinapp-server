@@ -19,7 +19,7 @@ func serveMoin(rw http.ResponseWriter, req *http.Request) {
 	var body moinRequest
 	err := decoder.Decode(&body)
 	if err != nil {
-		SendAPIErrorCode(err, http.StatusInternalServerError, rw)
+		sendErrorCode(rw, err, http.StatusBadRequest)
 		return
 	}
 
@@ -28,7 +28,7 @@ func serveMoin(rw http.ResponseWriter, req *http.Request) {
 	currentUser := getUserFromRequest(req)
 	targetUser := models.FindUserByName(body.Name)
 	if !targetUser.IsResult() {
-		SendAPIError(ErrUserNotFound, rw)
+		sendErrorCode(rw, ErrUserNotFound, http.StatusBadRequest)
 		return
 	}
 

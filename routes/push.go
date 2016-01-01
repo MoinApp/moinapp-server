@@ -27,7 +27,7 @@ func serveAddPushToken(rw http.ResponseWriter, req *http.Request) {
 	var request addPushTokenRequest
 	err := decoder.Decode(&request)
 	if err != nil {
-		SendAPIErrorCode(err, http.StatusInternalServerError, rw)
+		sendErrorCode(rw, err, http.StatusBadRequest)
 		return
 	}
 
@@ -38,7 +38,7 @@ func serveAddPushToken(rw http.ResponseWriter, req *http.Request) {
 	case GCMTokenType:
 		tokenDBType = models.GCMToken
 	default:
-		SendAPIError(ErrInvalidTokenType, rw)
+		sendErrorCode(rw, ErrInvalidTokenType, http.StatusBadRequest)
 		return
 	}
 

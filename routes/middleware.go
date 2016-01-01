@@ -4,6 +4,7 @@ package routes
 
 import (
 	"compress/gzip"
+	"errors"
 	"io"
 	"net/http"
 	"os"
@@ -23,6 +24,10 @@ const (
 
 var (
 	httpsOnlyCheckEnabled = true
+)
+
+var (
+	ErrOnlyHttpAllowed = errors.New("Only http allowed")
 )
 
 type gzipResponseWriter struct {
@@ -70,7 +75,7 @@ func httpsCheckHandler(next http.Handler) http.Handler {
 				protocol := strings.ToLower(req.Proto[:slashIndex])
 
 				if protocol != "https" {
-					http.Error(rw, "Only https allowed", http.StatusForbidden)
+					sendErrorCode(rw, ErrOnlyHttpAllowed, http.StatusForbidden)
 					return
 				}
 			}

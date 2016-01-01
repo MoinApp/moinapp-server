@@ -6,42 +6,27 @@ import (
 	"net/http"
 )
 
-type apiError struct {
+type errorResponse struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
 	Fields  string `json:"fields"`
 }
 
-func newAPIError(baseError error) *apiError {
-	return newAPIErrorCode(baseError, -1)
+func sendError(rw http.ResponseWriter, baseError error) {
+	sendErrorCode(rw, baseError, http.StatusInternalServerError)
 }
-func newAPIErrorCode(baseError error, code int) *apiError {
-	return &apiError{
-		Code:    code,
-		Message: baseError.Error(),
-	}
-}
+func sendErrorCode(rw http.ResponseWriter, baseError error, errorCode int) {
+	errorMessage := baseError.Error()
 
-func (e *apiError) Send(rw http.ResponseWriter) {
-	if e.Code == -1 {
-		e.Code = http.StatusBadRequest
+	response := errorResponse{
+		Code:    errorCode,
+		Message: errorMessage,
 	}
-
-	jsonError, err := json.Marshal(e)
+	jsonResponse, err := json.Marshal(response)
 	if err != nil {
-		jsonError = []byte(e.Message)
+		log.Printf("Error serialisation failed: %v.", err)
+		jsonResponse = []byte(errorMessage)
 	}
 
-	http.Error(rw, string(jsonError), e.Code)
-
-	if e.Code == http.StatusInternalServerError {
-		log.Printf("Error code %v sent: %q.", e.Code, e.Message)
-	}
-}
-
-func SendAPIError(baseError error, rw http.ResponseWriter) {
-	newAPIError(baseError).Send(rw)
-}
-func SendAPIErrorCode(baseError error, code int, rw http.ResponseWriter) {
-	newAPIErrorCode(baseError, code).Send(rw)
+	http.Error(rw, string(jsonResponse), errorCode)
 }

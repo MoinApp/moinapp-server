@@ -27,12 +27,16 @@ type sessionResponse struct {
 	SessionToken string `json:"session_token"`
 }
 
+var (
+	ErrInvalidCredentials = errors.New("Invalid credentials")
+)
+
 func serveSignUp(rw http.ResponseWriter, req *http.Request) {
 	decoder := json.NewDecoder(req.Body)
 	var body signUpRequest
 	err := decoder.Decode(&body)
 	if err != nil {
-		SendAPIErrorCode(err, http.StatusInternalServerError, rw)
+		sendErrorCode(rw, err, http.StatusBadRequest)
 		return
 	}
 
@@ -42,7 +46,7 @@ func serveSignUp(rw http.ResponseWriter, req *http.Request) {
 
 		tokenResponse, err := getSessionResponseTokenForUser(user)
 		if err != nil {
-			SendAPIErrorCode(err, http.StatusInternalServerError, rw)
+			sendError(rw, err)
 			return
 		}
 		rw.Write(tokenResponse)
@@ -54,7 +58,7 @@ func serveAuthentication(rw http.ResponseWriter, req *http.Request) {
 	var body authenticationRequest
 	err := decoder.Decode(&body)
 	if err != nil {
-		SendAPIErrorCode(err, http.StatusInternalServerError, rw)
+		sendErrorCode(rw, err, http.StatusBadRequest)
 		return
 	}
 
@@ -62,13 +66,13 @@ func serveAuthentication(rw http.ResponseWriter, req *http.Request) {
 	user := models.FindUserWithCredentials(body.Name, body.Password)
 
 	if user == nil {
-		// TODO: WTF
-		panic(errors.New("Invalid credentials"))
+		sendErrorCode(rw, ErrInvalidCredentials, http.StatusForbidden)
+		return
 	}
 
 	tokenResponse, err := getSessionResponseTokenForUser(user)
 	if err != nil {
-		SendAPIErrorCode(err, http.StatusInternalServerError, rw)
+		sendError(rw, err)
 		return
 	}
 	rw.Write(tokenResponse)

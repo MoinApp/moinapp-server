@@ -38,7 +38,7 @@ func serveGetUserProfile(rw http.ResponseWriter, req *http.Request) {
 	user := models.FindUserByName(username)
 	if !user.IsResult() {
 		fmt.Printf("Requested user profile for \"%v\": No results found.\n", username)
-		SendAPIError(ErrUserNotFound, rw)
+		sendErrorCode(rw, ErrUserNotFound, http.StatusNotFound)
 		return
 	}
 
@@ -52,7 +52,7 @@ func serveGetUserProfile(rw http.ResponseWriter, req *http.Request) {
 func serveSearchUser(rw http.ResponseWriter, req *http.Request) {
 	uri, err := url.Parse(req.RequestURI)
 	if err != nil {
-		SendAPIErrorCode(err, http.StatusInternalServerError, rw)
+		sendError(rw, err)
 		return
 	}
 	query := uri.Query()
