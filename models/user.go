@@ -24,8 +24,8 @@ type RecentMoin struct {
 	gorm.Model
 	UserID uint
 
-	User     User
-	LastMoin time.Time
+	User     User      `sql:"not null"`
+	LastMoin time.Time `sql:"not null"`
 }
 
 func (u *User) IsResult() bool {
