@@ -15,6 +15,11 @@ var (
 	ErrUnknownPushTokenType = errors.New("Unknown push token type.")
 )
 
+func SendPushNotificationToAll(tokens []models.PushToken, message string) {
+	for _, token := range tokens {
+		SendPushNotification(token, message)
+	}
+}
 func SendPushNotification(token models.PushToken, message string) {
 	var provider PushNotificationProvider
 

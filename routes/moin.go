@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/MoinApp/moinapp-server/models"
 	"github.com/MoinApp/moinapp-server/push"
 )
 
@@ -24,8 +25,16 @@ func serveMoin(rw http.ResponseWriter, req *http.Request) {
 
 	fmt.Printf("Moin request: %+v\n", body)
 
-	tokens := getUserFromRequest(req).GetPushTokens()
-	for _, token := range tokens {
-		push.SendPushNotification(token, "Moin")
+	currentUser := getUserFromRequest(req)
+	targetUser := models.FindUserByName(body.Name)
+	if !targetUser.IsResult() {
+		SendAPIError(ErrUserNotFound, rw)
+		return
+	}
+
+	tokens := targetUser.GetPushTokens()
+	if len(tokens) > 0 {
+		message := fmt.Sprintf("Moin from %v.", currentUser.Name)
+		push.SendPushNotificationToAll(tokens, message)
 	}
 }
