@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/Coccodrillo/apns"
 	"github.com/MoinApp/moinapp-server/models"
+	"github.com/alexjlockwood/gcm"
 	"log"
 	"math/rand"
 )
@@ -15,6 +16,10 @@ type PushNotification struct {
 	BadgeCount int
 	Payload    map[string]interface{}
 }
+
+const (
+	GoogleCloudMessagingRetries = 1
+)
 
 var (
 	ErrUnknownPushTokenType = errors.New("Unknown push token type.")
@@ -27,9 +32,11 @@ var (
 )
 
 var apnsClient *apns.Client
+var gcmSender *gcm.Sender
 
 func InitPushServices(isProduction bool) {
 	initApplePushNotificationService(isProduction)
+	initGoogleCloudMessaging()
 }
 func initApplePushNotificationService(isProduction bool) {
 	var gateway string
@@ -42,6 +49,11 @@ func initApplePushNotificationService(isProduction bool) {
 	certificateFile := "TODO"
 	keyFile := "TODO"
 	apnsClient = apns.NewClient(gateway, certificateFile, keyFile)
+}
+func initGoogleCloudMessaging() {
+	gcmSender = &gcm.Sender{
+		ApiKey: "TODO",
+	}
 }
 
 func SendMoinNotificationToUser(receiver, sender *models.User) {
@@ -75,6 +87,8 @@ func SendPushNotification(token models.PushToken, notification *PushNotification
 	switch token.Type {
 	case models.APNToken:
 		sendApplePushNotification(token.Token, notification)
+	case models.GCMToken:
+		sendGoogleCloudMessagingNotification(token.Token, notification)
 	default:
 		panic(ErrUnknownPushTokenType)
 	}
@@ -99,4 +113,13 @@ func sendApplePushNotification(token string, notification *PushNotification) {
 	if !response.Success {
 		log.Printf("APNS error: %v.", response.Error)
 	}
+}
+func sendGoogleCloudMessagingNotification(registrationID string, notification *PushNotification) {
+	message := gcm.NewMessage(notification.Payload, registrationID)
+
+	response, err := gcmSender.Send(message, GoogleCloudMessagingRetries)
+	if err != nil {
+		log.Printf("GCM error: %v.", err)
+	}
+	fmt.Printf("GCM reponse: %+v\n", response)
 }
