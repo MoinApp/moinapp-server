@@ -5,7 +5,6 @@ package routes
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/MoinApp/moinapp-server/auth"
 	"github.com/MoinApp/moinapp-server/models"
 	"net/http"
@@ -29,6 +28,7 @@ type sessionResponse struct {
 
 var (
 	ErrInvalidCredentials = errors.New("Invalid credentials")
+	ErrUsernameTaken      = errors.New("Username is taken already")
 )
 
 func serveSignUp(rw http.ResponseWriter, req *http.Request) {
@@ -40,17 +40,18 @@ func serveSignUp(rw http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	fmt.Printf("Create user request: %+v.\n", body)
-	if !models.IsUsernameTaken(body.Name) {
-		user := models.CreateUser(body.Name, body.Password, body.Email)
-
-		tokenResponse, err := getSessionResponseTokenForUser(user)
-		if err != nil {
-			sendError(rw, err)
-			return
-		}
-		rw.Write(tokenResponse)
+	if models.IsUsernameTaken(body.Name) {
+		sendErrorCode(rw, ErrUsernameTaken, http.StatusBadRequest)
+		return
 	}
+
+	user := models.CreateUser(body.Name, body.Password, body.Email)
+	tokenResponse, err := getSessionResponseTokenForUser(user)
+	if err != nil {
+		sendError(rw, err)
+		return
+	}
+	rw.Write(tokenResponse)
 }
 
 func serveAuthentication(rw http.ResponseWriter, req *http.Request) {
