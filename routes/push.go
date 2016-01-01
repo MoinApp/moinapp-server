@@ -27,7 +27,7 @@ func serveAddPushToken(rw http.ResponseWriter, req *http.Request) {
 	var request addPushTokenRequest
 	err := decoder.Decode(&request)
 	if err != nil {
-		SendAPIError(err, rw)
+		SendAPIErrorCode(err, http.StatusInternalServerError, rw)
 		return
 	}
 

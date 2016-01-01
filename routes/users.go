@@ -52,7 +52,7 @@ func serveGetUserProfile(rw http.ResponseWriter, req *http.Request) {
 func serveSearchUser(rw http.ResponseWriter, req *http.Request) {
 	uri, err := url.Parse(req.RequestURI)
 	if err != nil {
-		SendAPIError(err, rw)
+		SendAPIErrorCode(err, http.StatusInternalServerError, rw)
 		return
 	}
 	query := uri.Query()

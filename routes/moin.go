@@ -19,7 +19,7 @@ func serveMoin(rw http.ResponseWriter, req *http.Request) {
 	var body moinRequest
 	err := decoder.Decode(&body)
 	if err != nil {
-		SendAPIError(err, rw)
+		SendAPIErrorCode(err, http.StatusInternalServerError, rw)
 		return
 	}
 

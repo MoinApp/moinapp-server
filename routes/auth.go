@@ -32,7 +32,7 @@ func serveSignUp(rw http.ResponseWriter, req *http.Request) {
 	var body signUpRequest
 	err := decoder.Decode(&body)
 	if err != nil {
-		SendAPIError(err, rw)
+		SendAPIErrorCode(err, http.StatusInternalServerError, rw)
 		return
 	}
 
@@ -40,7 +40,11 @@ func serveSignUp(rw http.ResponseWriter, req *http.Request) {
 	if !models.IsUsernameTaken(body.Name) {
 		user := models.CreateUser(body.Name, body.Password, body.Email)
 
-		tokenResponse := getSessionResponseTokenForUser(user)
+		tokenResponse, err := getSessionResponseTokenForUser(user)
+		if err != nil {
+			SendAPIErrorCode(err, http.StatusInternalServerError, rw)
+			return
+		}
 		rw.Write(tokenResponse)
 	}
 }
@@ -50,7 +54,7 @@ func serveAuthentication(rw http.ResponseWriter, req *http.Request) {
 	var body authenticationRequest
 	err := decoder.Decode(&body)
 	if err != nil {
-		SendAPIError(err, rw)
+		SendAPIErrorCode(err, http.StatusInternalServerError, rw)
 		return
 	}
 
@@ -62,24 +66,26 @@ func serveAuthentication(rw http.ResponseWriter, req *http.Request) {
 		panic(errors.New("Invalid credentials"))
 	}
 
-	tokenResponse := getSessionResponseTokenForUser(user)
+	tokenResponse, err := getSessionResponseTokenForUser(user)
+	if err != nil {
+		SendAPIErrorCode(err, http.StatusInternalServerError, rw)
+		return
+	}
 	rw.Write(tokenResponse)
 }
 
-func getSessionResponseTokenForUser(user *models.User) []byte {
+func getSessionResponseTokenForUser(user *models.User) ([]byte, error) {
 	token, err := auth.GenerateJWTToken(*user)
 	if err != nil {
-		// TODO: WTF
-		panic(err)
+		return nil, err
 	}
 
 	data, err := json.Marshal(sessionResponse{
 		SessionToken: token,
 	})
 	if err != nil {
-		// TODO: WTF
-		panic(err)
+		return nil, err
 	}
 
-	return data
+	return data, nil
 }
