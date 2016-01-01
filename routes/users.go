@@ -67,11 +67,32 @@ func serveSearchUser(rw http.ResponseWriter, req *http.Request) {
 
 	fmt.Printf("Searched for user \"%v\": %v result(s).\n", username, len(profiles))
 
-	response, _ := json.Marshal(profiles)
+	response, err := json.Marshal(profiles)
+	if err != nil {
+		sendError(rw, err)
+		return
+	}
 	rw.Write(response)
 }
 
 func serveRecentUsers(rw http.ResponseWriter, req *http.Request) {
-	// TODO
-	fmt.Printf("Requested recents...\n")
+	currentUser := getUserFromRequest(req)
+	if !currentUser.IsResult() {
+		sendError(rw, ErrUserNotFound)
+		return
+	}
+
+	users := currentUser.GetRecents()
+
+	profiles := make([]userResponse, len(users))
+	for i, user := range users {
+		profiles[i] = newUserResponse(user)
+	}
+
+	response, err := json.Marshal(profiles)
+	if err != nil {
+		sendError(rw, err)
+		return
+	}
+	rw.Write(response)
 }

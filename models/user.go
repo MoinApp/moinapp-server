@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"fmt"
 	"github.com/jinzhu/gorm"
+	"time"
 )
 
 type User struct {
@@ -13,8 +14,18 @@ type User struct {
 	Name       string `sql:"unique; index"`
 	Password   string `sql:"not null"`
 	Email      string `sql:"not null"`
-	PushTokens []PushToken
 	PrivateKey string `sql:"size:4096"`
+
+	PushTokens []PushToken
+	Recents    []RecentMoin
+}
+
+type RecentMoin struct {
+	gorm.Model
+	UserID uint
+
+	User     User
+	LastMoin time.Time
 }
 
 func (u *User) IsResult() bool {
@@ -28,7 +39,7 @@ func nilUser() *User {
 }
 
 func (u *User) AddPushToken(token *PushToken) *User {
-	db.Model(&u).Association("PushTokens").Append(token)
+	db.Model(u).Association("PushTokens").Append(token)
 
 	return u
 }
@@ -36,18 +47,55 @@ func (u *User) AddPushToken(token *PushToken) *User {
 func (u *User) GetPushTokens() []PushToken {
 	var tokens []PushToken
 
-	db.Model(&u).Related(&tokens)
+	db.Model(u).Related(&tokens)
 
 	return tokens
 }
 
-func IsUsernameTaken(username string) bool {
-	var query = &User{
-		Name: username,
-	}
-	var result = nilUser()
+func (u *User) GetRecents() []*User {
+	var recents []RecentMoin
 
-	db.Where(query).First(result)
+	db.Model(u).Related(&recents)
+
+	users := make([]*User, len(recents))
+	for i, recent := range recents {
+		user := nilUser()
+		db.Model(&recent).Related(user)
+		users[i] = user
+	}
+
+	return users
+}
+
+func (u *User) AddRecentUser(newRecent *User) *User {
+	moin := RecentMoin{
+		User:     *newRecent,
+		LastMoin: time.Now(),
+	}
+
+	var recents []RecentMoin
+
+	db.Model(u).Related(&recents)
+
+	for i, recent := range recents {
+		recentUser := nilUser()
+		db.Model(&recent).Related(recentUser)
+
+		if recentUser.Name == newRecent.Name {
+			recents = append(recents[:i], recents[i+1:]...)
+			break
+		}
+	}
+
+	recents = append([]RecentMoin{moin}, recents...)
+
+	db.Model(u).Association("Recents").Replace(recents)
+
+	return u
+}
+
+func IsUsernameTaken(username string) bool {
+	result := FindUserByName(username)
 	return result.IsResult()
 }
 

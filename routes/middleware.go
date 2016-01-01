@@ -136,7 +136,6 @@ func securityHandler(next http.Handler) http.Handler {
 			return
 		}
 
-		fmt.Printf("Requesting user: %+v\n", user)
 		req.Header.Add(requestUserHeader, strconv.Itoa(int(user.ID)))
 
 		next.ServeHTTP(rw, req)

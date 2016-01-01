@@ -31,7 +31,7 @@ func InitDB(isProduction bool) *gorm.DB {
 		db = &dbConnection
 
 		// add database table structs here
-		db.AutoMigrate(&User{}, &PushToken{})
+		db.AutoMigrate(&User{}, &PushToken{}, &RecentMoin{})
 
 		db.LogMode(!isProduction)
 	}

@@ -38,5 +38,7 @@ func serveMoin(rw http.ResponseWriter, req *http.Request) {
 		push.SendPushNotificationToAll(tokens, message)
 	}
 
+	currentUser.AddRecentUser(targetUser)
+
 	rw.WriteHeader(http.StatusOK)
 }
