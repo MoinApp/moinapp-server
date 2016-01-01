@@ -1,7 +1,5 @@
 package routes
 
-// BUG(sgade): The middleware errors are plain text. They should be JSON APIErrors.
-
 import (
 	"compress/gzip"
 	"errors"
@@ -133,13 +131,13 @@ func headerHandler(next http.Handler) http.Handler {
 func securityHandler(next http.Handler) http.Handler {
 	fn := func(rw http.ResponseWriter, req *http.Request) {
 		user, err := auth.ValidateSession(req)
-
-		req.Header.Add(requestUserHeader, strconv.Itoa(int(user.ID)))
-
-		if err != nil {
-			http.Error(rw, err.Error(), http.StatusForbidden)
+		if err != nil || !user.IsResult() {
+			sendErrorCode(rw, err, http.StatusForbidden)
 			return
 		}
+
+		fmt.Printf("Requesting user: %+v\n", user)
+		req.Header.Add(requestUserHeader, strconv.Itoa(int(user.ID)))
 
 		next.ServeHTTP(rw, req)
 	}
