@@ -3,6 +3,7 @@ package main
 
 import (
 	"github.com/MoinApp/moinapp-server/models"
+	"github.com/MoinApp/moinapp-server/push"
 	"github.com/MoinApp/moinapp-server/routes"
 	"log"
 	"os"
@@ -18,6 +19,7 @@ func main() {
 	if !models.TestDB() {
 		log.Fatal("Database is not connected.")
 	}
+	push.InitPushServices(isProduction())
 	routes.InitRouter(isProduction())
 
 	log.Println("Ready.")
