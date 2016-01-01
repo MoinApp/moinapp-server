@@ -145,5 +145,9 @@ func securityHandler(next http.Handler) http.Handler {
 func getUserFromRequest(req *http.Request) *models.User {
 	userID := req.Header.Get(requestUserHeader)
 
+	if len(userID) == 0 {
+		return nil
+	}
+
 	return models.FindUserById(userID)
 }
