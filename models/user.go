@@ -18,7 +18,6 @@ type User struct {
 }
 
 func (u *User) IsResult() bool {
-	fmt.Printf("Nil check on: %+v\n", u)
 	return (u.Password != nilUser().Password)
 }
 
@@ -54,8 +53,7 @@ func IsUsernameTaken(username string) bool {
 
 func CreateUser(name, password, email string) *User {
 	// create hashes
-	passwordHash := sha256.Sum256([]byte(password))
-	password = fmt.Sprintf("%x", passwordHash[:sha256.Size])
+	password = getPasswordHash(password)
 	emailHash := md5.Sum([]byte(email))
 	email = fmt.Sprintf("%x", emailHash[:md5.Size])
 
@@ -68,6 +66,11 @@ func CreateUser(name, password, email string) *User {
 	db.Create(user)
 
 	return user
+}
+
+func getPasswordHash(password string) string {
+	passwordHash := sha256.Sum256([]byte(password))
+	return fmt.Sprintf("%x", passwordHash[:sha256.Size])
 }
 
 func FindUserByName(username string) *User {
@@ -97,7 +100,7 @@ func FindUserWithCredentials(username, password string) *User {
 
 	query := &User{
 		Name:     username,
-		Password: password,
+		Password: getPasswordHash(password),
 	}
 
 	db.Where(query).First(result)

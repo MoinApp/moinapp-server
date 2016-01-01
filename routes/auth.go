@@ -62,10 +62,9 @@ func serveAuthentication(rw http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	fmt.Printf("Auth request: %+v\n", body)
 	user := models.FindUserWithCredentials(body.Name, body.Password)
 
-	if user == nil {
+	if !user.IsResult() {
 		sendErrorCode(rw, ErrInvalidCredentials, http.StatusForbidden)
 		return
 	}
