@@ -37,4 +37,6 @@ func serveMoin(rw http.ResponseWriter, req *http.Request) {
 		message := fmt.Sprintf("Moin from %v.", currentUser.Name)
 		push.SendPushNotificationToAll(tokens, message)
 	}
+
+	rw.WriteHeader(http.StatusOK)
 }
