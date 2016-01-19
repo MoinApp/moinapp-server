@@ -13,15 +13,15 @@ const (
 	homeRedirectURL = "http://i.imgur.com/E2T98iu.jpg"
 )
 
-var router *mux.Router
-
-func InitRouter(httpsOnly bool) {
-	router = mux.NewRouter()
+func CreateRouter(httpsOnly bool) *mux.Router {
+	router := mux.NewRouter()
 
 	router.Handle("/", http.RedirectHandler(homeRedirectURL, http.StatusFound)).Methods("GET")
 
 	v4.SetHttpsOnly(httpsOnly)
 	v4.RegisterRoutes(router.PathPrefix("/v4").Subrouter())
+
+	return router
 }
 
 func getListeningPort() uint {
@@ -33,9 +33,10 @@ func getListeningPort() uint {
 	return uint(portNum)
 }
 
-func StartListening() {
+func StartListening(router *mux.Router) string {
 	listenFormat := fmt.Sprintf(":%v", getListeningPort())
 
 	http.Handle("/", router)
 	http.ListenAndServe(listenFormat, nil)
+	return listenFormat
 }

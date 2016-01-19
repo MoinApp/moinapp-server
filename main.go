@@ -20,8 +20,8 @@ func main() {
 		log.Fatal("Database is not connected.")
 	}
 	push.InitPushServices(isProduction())
-	routes.InitRouter(isProduction())
+	router := routes.CreateRouter(isProduction())
 
 	log.Println("Ready.")
-	routes.StartListening()
+	routes.StartListening(router)
 }
