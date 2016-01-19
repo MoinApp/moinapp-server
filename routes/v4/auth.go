@@ -1,4 +1,4 @@
-package routes
+package v4
 
 // TODO JSON-Web-Tokens based authentication flow for all endpoints
 

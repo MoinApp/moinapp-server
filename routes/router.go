@@ -2,6 +2,7 @@ package routes
 
 import (
 	"fmt"
+	"github.com/MoinApp/moinapp-server/routes/v4"
 	"github.com/gorilla/mux"
 	"net/http"
 	"os"
@@ -15,21 +16,12 @@ const (
 var router *mux.Router
 
 func InitRouter(httpsOnly bool) {
-	setHttpsCheckState(httpsOnly)
 	router = mux.NewRouter()
-	router.StrictSlash(true)
 
-	router.Handle("/", defaultUnauthorizedHandler(http.RedirectHandler(homeRedirectURL, http.StatusFound))).Methods("GET", "POST")
+	router.Handle("/", http.RedirectHandler(homeRedirectURL, http.StatusFound)).Methods("GET")
 
-	router.Handle("/moin", defaultHandlerF(serveMoin)).Methods("POST")
-
-	router.Handle("/users/signup", defaultUnauthorizedHandler(http.HandlerFunc(serveSignUp))).Methods("POST")
-	router.Handle("/users/auth", defaultUnauthorizedHandler(http.HandlerFunc(serveAuthentication))).Methods("POST")
-	router.Handle("/users", defaultHandlerF(serveSearchUser)).Methods("GET")
-	router.Handle("/users/recents", defaultHandlerF(serveRecentUsers)).Methods("GET")
-	router.Handle("/users/addPush", defaultHandlerF(serveAddPushToken)).Methods("POST")
-
-	router.Handle("/user/{username}", defaultHandlerF(serveGetUserProfile)).Methods("GET")
+	v4.SetHttpsOnly(httpsOnly)
+	v4.RegisterRoutes(router.PathPrefix("/v4").Subrouter())
 }
 
 func getListeningPort() uint {
