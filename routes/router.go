@@ -18,6 +18,9 @@ func CreateRouter(httpsOnly bool) *mux.Router {
 
 	router.Handle("/", http.RedirectHandler(homeRedirectURL, http.StatusFound)).Methods("GET")
 
+	router.PathPrefix("/v1").HandlerFunc(discontinuationHandler)
+	router.PathPrefix("/v2").HandlerFunc(discontinuationHandler)
+	router.PathPrefix("/v3").HandlerFunc(discontinuationHandler)
 	v4.SetHttpsOnly(httpsOnly)
 	v4.RegisterRoutes(router.PathPrefix("/v4").Subrouter())
 
