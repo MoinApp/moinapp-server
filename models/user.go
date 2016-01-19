@@ -14,7 +14,7 @@ type User struct {
 	Name       string `sql:"unique; index"`
 	Password   string `sql:"not null"`
 	Email      string `sql:"not null"`
-	PrivateKey string `sql:"size:4096"`
+	PrivateKey string `sql:"size:4096"` // Needed for API v4
 
 	PushTokens []PushToken
 	Recents    []RecentMoin
