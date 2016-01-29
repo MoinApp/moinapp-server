@@ -3,7 +3,6 @@ package v4
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/MoinApp/moinapp-server/models"
 	"net/http"
 )
@@ -42,10 +41,8 @@ func serveAddPushToken(rw http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	fmt.Printf("Add Push Token request: %+v\n", request)
-	token := models.NewPushToken(tokenDBType, request.Token)
 	currentUser := getUserFromRequest(req)
-
+	token := models.NewPushToken(tokenDBType, request.Token)
 	currentUser.AddPushToken(token)
 
 	rw.WriteHeader(http.StatusOK)
