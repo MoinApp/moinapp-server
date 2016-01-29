@@ -8,6 +8,7 @@ import (
 	"github.com/alexjlockwood/gcm"
 	"log"
 	"math/rand"
+	"os"
 )
 
 type PushNotification struct {
@@ -34,6 +35,13 @@ var (
 var apnsClient *apns.Client
 var gcmSender *gcm.Sender
 
+func getGCMAPIKey() string {
+	return os.Getenv("GCM_API_KEY")
+}
+func getAPNSCertificate() string {
+	return os.Getenv("APN_CERT")
+}
+
 func InitPushServices(isProduction bool) {
 	initApplePushNotificationService(isProduction)
 	initGoogleCloudMessaging()
@@ -46,13 +54,14 @@ func initApplePushNotificationService(isProduction bool) {
 		gateway = "gateway.sandbox.push.apple.com:2195"
 	}
 
-	certificateFile := "TODO"
-	keyFile := "TODO"
-	apnsClient = apns.NewClient(gateway, certificateFile, keyFile)
+	// TODO: this is an PFX file. Need to separate out PEM and KEY
+	certificateBase64 := getAPNSCertificate()
+	keyBase64 := getAPNSCertificate()
+	apnsClient = apns.BareClient(gateway, certificateBase64, keyBase64)
 }
 func initGoogleCloudMessaging() {
 	gcmSender = &gcm.Sender{
-		ApiKey: "TODO",
+		ApiKey: getGCMAPIKey(),
 	}
 }
 
