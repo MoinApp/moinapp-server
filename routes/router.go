@@ -38,13 +38,16 @@ func getListeningPort() uint {
 	return uint(portNum)
 }
 
-func StartListening(router *mux.Router, done chan bool) string {
+func StartListening(router *mux.Router, listeningError chan error) string {
 	listenFormat := fmt.Sprintf(":%v", getListeningPort())
 
-	http.Handle("/", router)
+	srv := http.Server{
+		Addr:    listenFormat,
+		Handler: router,
+	}
+
 	go func() {
-		http.ListenAndServe(listenFormat, nil)
-		done <- true
+		listeningError <- srv.ListenAndServe()
 	}()
 
 	return listenFormat

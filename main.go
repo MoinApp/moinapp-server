@@ -22,8 +22,8 @@ func main() {
 	push.InitPushServices(isProduction())
 	router := routes.CreateRouter(isProduction())
 
-	listeningDone := make(chan bool)
+	listeningDone := make(chan error)
 	listeningAddr := routes.StartListening(router, listeningDone)
 	log.Printf("Ready. Listening on %q.", listeningAddr)
-	<-listeningDone
+	log.Fatalf("Error: %v.", <-listeningDone)
 }
