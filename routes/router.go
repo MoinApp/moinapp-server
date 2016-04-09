@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	homeRedirectURL = "http://i.imgur.com/E2T98iu.jpg"
+	homeRedirectURL = "https://i.imgur.com/E2T98iu.jpg"
 )
 
 func CreateRouter(httpsOnly bool) *mux.Router {
