@@ -4,3 +4,6 @@
 # Application
 moinapp-server
 db.sqlite3
+
+# Sublime Text
+*.sublime-workspace
