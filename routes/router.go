@@ -2,12 +2,13 @@ package routes
 
 import (
 	"fmt"
-	"github.com/MoinApp/moinapp-server/routes/v4"
-	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
+
+	"github.com/MoinApp/moinapp-server/routes/v4"
+	"github.com/gorilla/mux"
 )
 
 const (
@@ -21,7 +22,7 @@ func CreateRouter(httpsOnly bool) *mux.Router {
 	router.Handle("/", http.RedirectHandler(homeRedirectURL, http.StatusFound)).Methods("GET")
 
 	apiRouter := router.PathPrefix("/api").Subrouter()
-	apiRouter.PathPrefix("/").HandlerFunc(discontinuationHandler)
+	//apiRouter.PathPrefix("/").HandlerFunc(discontinuationHandler)
 	apiRouter.PathPrefix("/v1").HandlerFunc(discontinuationHandler)
 	apiRouter.PathPrefix("/v2").HandlerFunc(discontinuationHandler)
 	apiRouter.PathPrefix("/v3").HandlerFunc(discontinuationHandler)
