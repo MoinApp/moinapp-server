@@ -1,1 +1,1 @@
-web: echo TODO
+web: moinapp-server
