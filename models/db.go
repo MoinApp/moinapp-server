@@ -1,11 +1,12 @@
 package models
 
 import (
+	"log"
+	"os"
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
 	_ "github.com/mattn/go-sqlite3"
-	"log"
-	"os"
 )
 
 var db *gorm.DB
@@ -13,7 +14,7 @@ var db *gorm.DB
 // InitDB initializes the database connection and returns the handle. This may crash if the connection cannot be established.
 func InitDB(isProduction bool) *gorm.DB {
 	if db == nil {
-		var dbConnection *gorm.DB
+		var dbConnection gorm.DB
 		var err error
 
 		if isProduction {
@@ -28,7 +29,7 @@ func InitDB(isProduction bool) *gorm.DB {
 			return nil
 		}
 
-		db = dbConnection
+		db = &dbConnection
 
 		// add database table structs here
 		db.AutoMigrate(&User{}, &PushToken{}, &RecentMoin{})
