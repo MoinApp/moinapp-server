@@ -37,12 +37,15 @@ func getListeningPort() uint {
 	port := os.Getenv("PORT")
 	portNum, err := strconv.ParseUint(port, 10, 32)
 	if err != nil {
-		defaultPortName := string(defaultPort)
-		if defaultPort == 0 {
-			defaultPortName = "system defined port"
+		if len(port) > 0 {
+			defaultPortName := string(defaultPort)
+			if defaultPort == 0 {
+				defaultPortName = "system defined port"
+			}
+
+			log.Printf("Error parsing PORT. Using %v.", defaultPortName)
 		}
 
-		log.Printf("Error parsing PORT. Using %v.", defaultPortName)
 		portNum = defaultPort
 	}
 	return uint(portNum)
