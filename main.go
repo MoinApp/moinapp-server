@@ -2,11 +2,19 @@
 package main
 
 import (
+	"log"
+	"os"
+	"runtime"
+
 	"github.com/MoinApp/moinapp-server/models"
 	"github.com/MoinApp/moinapp-server/push"
 	"github.com/MoinApp/moinapp-server/routes"
-	"log"
-	"os"
+)
+
+const (
+	APP_NAME = "MoinApp-Server"
+	// TODO: let this be written at compile-time
+	APP_VERSION = "feature/go-rewrite"
 )
 
 func isProduction() bool {
@@ -14,6 +22,7 @@ func isProduction() bool {
 }
 
 func main() {
+	log.Printf("%v %q on %v/%v\n", APP_NAME, APP_VERSION, runtime.GOOS, runtime.GOARCH)
 	log.Println("Hello! Booting...")
 	models.InitDB(isProduction())
 	if !models.TestDB() {
