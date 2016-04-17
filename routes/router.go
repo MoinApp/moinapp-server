@@ -22,12 +22,13 @@ func CreateRouter(httpsOnly bool) *mux.Router {
 	router.Handle("/", http.RedirectHandler(homeRedirectURL, http.StatusFound)).Methods("GET")
 
 	apiRouter := router.PathPrefix("/api").Subrouter()
-	//apiRouter.PathPrefix("/").HandlerFunc(discontinuationHandler)
 	apiRouter.PathPrefix("/v1").HandlerFunc(discontinuationHandler)
 	apiRouter.PathPrefix("/v2").HandlerFunc(discontinuationHandler)
 	apiRouter.PathPrefix("/v3").HandlerFunc(discontinuationHandler)
 	v4.SetHttpsOnly(httpsOnly)
 	v4.RegisterRoutes(apiRouter.PathPrefix("/v4").Subrouter())
+	// fallback, for old api calls (pre-v4)
+	apiRouter.HandleFunc("/", discontinuationHandler)
 
 	return router
 }
