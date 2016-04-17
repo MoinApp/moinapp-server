@@ -13,7 +13,7 @@ import (
 
 const (
 	homeRedirectURL = "https://i.imgur.com/E2T98iu.jpg"
-	defaultPort     = 0
+	defaultPort     = 3000
 )
 
 func CreateRouter(httpsOnly bool) *mux.Router {
