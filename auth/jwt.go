@@ -68,7 +68,7 @@ func ValidateJWTToken(input string) (models.User, error) {
 		}
 
 		// Get the user ID
-		userID := token.Header["user"]
+		userID := uint(token.Header["user"].(float64))
 
 		user = *models.FindUserById(userID)
 
