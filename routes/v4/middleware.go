@@ -1,22 +1,16 @@
 package v4
 
 import (
-	"compress/gzip"
 	"errors"
-	"io"
 	"net/http"
-	"os"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/MoinApp/moinapp-server/models"
 	"github.com/MoinApp/moinapp-server/routes/v4/auth"
-	"github.com/gorilla/handlers"
 )
 
 const (
-	timeout           = 1000 * time.Millisecond
 	requestUserHeader = "_moinapp_user"
 )
 
@@ -25,22 +19,18 @@ var (
 )
 
 var (
-	ErrOnlyHttpAllowed = errors.New("Only http allowed")
+	ErrOnlyHttpsAllowed = errors.New("Only https allowed")
 )
 
-type gzipResponseWriter struct {
-	// Writer is the gzip compressing io.Writer.
-	io.Writer
-	// ResponseWriter is the standard response writer for the http connection.
-	http.ResponseWriter
-}
+// getUserFromRequest returns the user model given a valid request header.
+func getUserFromRequest(req *http.Request) *models.User {
+	userID := req.Header.Get(requestUserHeader)
 
-func (w gzipResponseWriter) Write(b []byte) (int, error) {
-	if w.Header().Get("Content-Type") == "" {
-		w.Header().Set("Content-Type", http.DetectContentType(b))
+	if len(userID) == 0 {
+		return nil
 	}
 
-	return w.Writer.Write(b)
+	return models.FindUserById(userID)
 }
 
 // setHttpsCheckState sets the flag whether any request should be checked to be made via the HTTPS-protocol
@@ -54,11 +44,11 @@ func defaultHandlerF(nextFunc func(http.ResponseWriter, *http.Request)) http.Han
 }
 
 func defaultHandler(next http.Handler) http.Handler {
-	return httpsCheckHandler(gzipCompressionHandler(handlers.LoggingHandler(os.Stdout, securityHandler(timeoutHandler(headerHandler(next))))))
+	return httpsCheckHandler(securityHandler(headerHandler(next)))
 }
 
 func defaultUnauthorizedHandler(next http.Handler) http.Handler {
-	return httpsCheckHandler(gzipCompressionHandler(handlers.LoggingHandler(os.Stdout, timeoutHandler(headerHandler(next)))))
+	return httpsCheckHandler(headerHandler(next))
 }
 
 func httpsCheckHandler(next http.Handler) http.Handler {
@@ -73,7 +63,7 @@ func httpsCheckHandler(next http.Handler) http.Handler {
 				protocol := strings.ToLower(req.Proto[:slashIndex])
 
 				if protocol != "https" {
-					sendErrorCode(rw, ErrOnlyHttpAllowed, http.StatusForbidden)
+					sendErrorCode(rw, ErrOnlyHttpsAllowed, http.StatusForbidden)
 					return
 				}
 			}
@@ -85,42 +75,9 @@ func httpsCheckHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(fn)
 }
 
-func gzipCompressionHandler(next http.Handler) http.Handler {
-	// with help from https://gist.github.com/the42/1956518
-	fn := func(rw http.ResponseWriter, req *http.Request) {
-		// only send gzip if supported by the requesting client
-		if !strings.Contains(strings.ToLower(req.Header.Get("Accept-Encoding")), "gzip") {
-			// if its not, then serve normal request
-			next.ServeHTTP(rw, req)
-			return
-		}
-
-		// add content-encoding header
-		rw.Header().Set("Content-Encoding", "gzip")
-
-		// create compressor for this request
-		compressor := gzip.NewWriter(rw)
-		defer compressor.Close()
-		newWriter := gzipResponseWriter{
-			Writer:         compressor,
-			ResponseWriter: rw,
-		}
-
-		// serve with new gzip compressor
-		next.ServeHTTP(newWriter, req)
-	}
-
-	return http.HandlerFunc(fn)
-}
-
-func timeoutHandler(next http.Handler) http.Handler {
-	return http.TimeoutHandler(next, timeout, "Response timeout reached.")
-}
-
 func headerHandler(next http.Handler) http.Handler {
 	fn := func(rw http.ResponseWriter, req *http.Request) {
 		rw.Header().Set("Content-Type", "application/json")
-		rw.Header().Set("X-Served-by", "moinapp-server")
 
 		next.ServeHTTP(rw, req)
 	}
@@ -142,14 +99,4 @@ func securityHandler(next http.Handler) http.Handler {
 	}
 
 	return http.HandlerFunc(fn)
-}
-
-func getUserFromRequest(req *http.Request) *models.User {
-	userID := req.Header.Get(requestUserHeader)
-
-	if len(userID) == 0 {
-		return nil
-	}
-
-	return models.FindUserById(userID)
 }

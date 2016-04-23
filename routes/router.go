@@ -54,7 +54,7 @@ func getListeningPort() uint {
 func StartListening(router *mux.Router, listeningError chan error) string {
 	srv := http.Server{
 		Addr:    fmt.Sprintf(":%v", getListeningPort()),
-		Handler: router,
+		Handler: middleware(router),
 	}
 
 	go func() {
