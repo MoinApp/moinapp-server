@@ -3,6 +3,7 @@ package routes
 import (
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"strconv"
@@ -14,6 +15,7 @@ import (
 const (
 	homeRedirectURL = "https://i.imgur.com/E2T98iu.jpg"
 	defaultPort     = 3000
+	listenNet       = "tcp"
 )
 
 func CreateRouter(httpsOnly bool) *mux.Router {
@@ -51,15 +53,22 @@ func getListeningPort() uint {
 	return uint(portNum)
 }
 
-func StartListening(router *mux.Router, listeningError chan error) string {
+func StartListening(router *mux.Router, listeningError chan error) net.Addr {
 	srv := http.Server{
-		Addr:    fmt.Sprintf(":%v", getListeningPort()),
 		Handler: middleware(router),
+	}
+	addr, err := net.ResolveTCPAddr(listenNet, fmt.Sprintf(":%v", getListeningPort()))
+	if err != nil {
+		log.Fatalf("Could not parse %v addr: %v.", listenNet, err)
+	}
+	listener, err := net.ListenTCP(listenNet, addr)
+	if err != nil {
+		log.Fatalf("Could not listen on %v: %v.", addr, err)
 	}
 
 	go func() {
-		listeningError <- srv.ListenAndServe()
+		listeningError <- srv.Serve(listener)
 	}()
 
-	return srv.Addr
+	return listener.Addr()
 }
