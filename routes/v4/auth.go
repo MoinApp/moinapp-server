@@ -5,8 +5,8 @@ package v4
 import (
 	"encoding/json"
 	"errors"
-	"github.com/MoinApp/moinapp-server/auth"
 	"github.com/MoinApp/moinapp-server/models"
+	"github.com/MoinApp/moinapp-server/routes/v4/auth"
 	"net/http"
 )
 

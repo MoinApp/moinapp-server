@@ -10,8 +10,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/MoinApp/moinapp-server/auth"
 	"github.com/MoinApp/moinapp-server/models"
+	"github.com/MoinApp/moinapp-server/routes/v4/auth"
 	"github.com/gorilla/handlers"
 )
 
