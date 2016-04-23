@@ -7,15 +7,16 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/MoinApp/moinapp-server/routes/v4"
 	"github.com/gorilla/mux"
 )
 
 const (
-	homeRedirectURL = "https://i.imgur.com/E2T98iu.jpg"
-	defaultPort     = 3000
-	listenNet       = "tcp"
+	homeRedirectURL        = "https://i.imgur.com/E2T98iu.jpg"
+	defaultPort     uint16 = 3000
+	listenNet              = "tcp"
 )
 
 func CreateRouter(httpsOnly bool) *mux.Router {
@@ -35,11 +36,12 @@ func CreateRouter(httpsOnly bool) *mux.Router {
 	return router
 }
 
-func getListeningPort() uint {
-	port := os.Getenv("PORT")
-	portNum, err := strconv.ParseUint(port, 10, 32)
-	if err != nil {
-		if len(port) > 0 {
+func getListeningPort() uint16 {
+	port := strings.Trim(os.Getenv("PORT"), " ")
+	if len(port) > 0 {
+		if portNum, err := strconv.ParseUint(port, 10, 16); err == nil {
+			return uint16(portNum)
+		} else {
 			defaultPortName := fmt.Sprintf("%v", defaultPort)
 			if defaultPort == 0 {
 				defaultPortName = "system defined port"
@@ -47,10 +49,9 @@ func getListeningPort() uint {
 
 			log.Printf("Error parsing PORT. Using %v.", defaultPortName)
 		}
-
-		portNum = defaultPort
 	}
-	return uint(portNum)
+
+	return defaultPort
 }
 
 func StartListening(router *mux.Router, listeningError chan error) net.Addr {
