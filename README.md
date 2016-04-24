@@ -5,11 +5,16 @@
 The server for Moin.
 The server is deployed to http://moinapp.herokuapp.com/ (this link is funny).
 
-## Development
+## Build
 
-Running `go build` in this directory should build the application with all of its dependencies. The result will be an executable called `moinapp-server`. This is the entire server.
+To build the server binary, run `build.sh`. The result will be an executable called `moinapp-server`. This is the entire server with all of its dependencies included.
 
 For improved build times run `go install` once so that all dependencies are cached.
+
+## Running
+
+Start `moinapp-server`.
+You can modify the port via the `PORT` environment variable. Setting this to `0` will cause the server to use a system-defined port.
 
 ## Bugs
 
