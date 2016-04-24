@@ -1,8 +1,9 @@
 package v4
 
 import (
-	"github.com/gorilla/mux"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 func RegisterRoutes(router *mux.Router) {
@@ -17,6 +18,8 @@ func RegisterRoutes(router *mux.Router) {
 	router.Handle("/users/addPush", defaultHandlerF(serveAddPushToken)).Methods("POST")
 
 	router.Handle("/user/{username}", defaultHandlerF(serveGetUserProfile)).Methods("GET")
+
+	router.NotFoundHandler = http.NotFoundHandler()
 }
 
 func SetHttpsOnly(httpsOnly bool) {

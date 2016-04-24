@@ -31,7 +31,7 @@ func CreateRouter(httpsOnly bool) *mux.Router {
 	v4.SetHttpsOnly(httpsOnly)
 	v4.RegisterRoutes(apiRouter.PathPrefix("/v4").Subrouter())
 	// fallback, for old api calls (pre-v4)
-	apiRouter.HandleFunc("/", discontinuationHandler)
+	apiRouter.NotFoundHandler = http.HandlerFunc(discontinuationHandler)
 
 	return router
 }

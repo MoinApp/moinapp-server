@@ -12,7 +12,8 @@ import (
 )
 
 var (
-	server *httptest.Server = nil
+	server           *httptest.Server
+	defaultTransport http.RoundTripper = &http.Transport{}
 )
 
 func TestMain(m *testing.M) {
@@ -33,7 +34,10 @@ func path(path string) string {
 }
 
 func TestRootRedirectsToImage(t *testing.T) {
-	res, err := http.Get(path("/"))
+	req, _ := http.NewRequest("GET", server.URL+"/", nil)
+
+	res, err := defaultTransport.RoundTrip(req)
+
 	if err != nil {
 		t.Error(err)
 	}
@@ -58,7 +62,10 @@ func TestDiscontinuation(t *testing.T) {
 	}
 
 	for _, url := range discontinuedRoutes {
-		res, err := http.Get(path(url))
+		req, _ := http.NewRequest("GET", server.URL+url, nil)
+
+		res, err := defaultTransport.RoundTrip(req)
+
 		if err != nil {
 			t.Error(err)
 		}
@@ -68,4 +75,20 @@ func TestDiscontinuation(t *testing.T) {
 			t.Errorf("Wrong status code. Expected: %v. Got: %v.", http.StatusGone, res.Status)
 		}
 	}
+}
+
+func TestNewestApi(t *testing.T) {
+	req, _ := http.NewRequest("GET", server.URL+"/v4/", nil)
+
+	res, err := defaultTransport.RoundTrip(req)
+
+	if err != nil {
+		t.Error(err)
+	}
+	res.Body.Close()
+
+	if res.StatusCode != http.StatusNotFound {
+		t.Errorf("Wrong status code. Expected: %v. Got: %v.", http.StatusNotFound, res.Status)
+	}
+
 }
