@@ -1,10 +1,12 @@
 package routes
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 	"time"
 
+	"github.com/MoinApp/moinapp-server/info"
 	"github.com/gorilla/handlers"
 )
 
@@ -21,7 +23,8 @@ func middleware(next http.Handler) http.Handler {
 
 func middleware_defaultHeaders(next http.Handler) http.Handler {
 	fn := func(rw http.ResponseWriter, req *http.Request) {
-		rw.Header().Set("X-Served-by", "moinapp-server")
+		servedByHeader := fmt.Sprintf("%v (%v)", info.AppName, info.AppVersion)
+		rw.Header().Set("X-Served-by", servedByHeader)
 
 		next.ServeHTTP(rw, req)
 	}

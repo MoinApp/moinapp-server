@@ -6,30 +6,20 @@ import (
 	"os"
 	"runtime"
 
+	"github.com/MoinApp/moinapp-server/info"
 	"github.com/MoinApp/moinapp-server/models"
 	"github.com/MoinApp/moinapp-server/push"
 	"github.com/MoinApp/moinapp-server/routes"
 )
 
-const (
-	APP_NAME = "MoinApp-Server"
-)
-
-var APP_VERSION string
-
 func isProduction() bool {
 	return (os.Getenv("PRODUCTION") != "")
 }
-func checkCorrectCompilation() {
-	if APP_VERSION == "" {
-		APP_VERSION = "unknown"
-	}
-}
 
 func main() {
-	checkCorrectCompilation()
+	info.CheckCorrectCompilation()
 
-	log.Printf("%v %q on %v/%v\n", APP_NAME, APP_VERSION, runtime.GOOS, runtime.GOARCH)
+	log.Printf("%v %q on %v/%v\n", info.AppName, info.AppVersion, runtime.GOOS, runtime.GOARCH)
 	log.Println("Hello! Booting...")
 	models.InitDB(isProduction())
 	if !models.TestDB() {

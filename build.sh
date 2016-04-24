@@ -20,4 +20,4 @@ else
   fi
 fi
 
-go build -ldflags "-X main.APP_VERSION=$BRANCH"
+go build -ldflags "-X github.com/MoinApp/moinapp-server/info.AppVersion=$BRANCH"
