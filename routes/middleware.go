@@ -16,7 +16,7 @@ const (
 )
 
 func middleware(next http.Handler) http.Handler {
-	return handlers.LoggingHandler(os.Stdout, middleware_timeout(handlers.CompressHandler(middleware_defaultHeaders(next))))
+	return handlers.LoggingHandler(os.Stdout, handlers.CompressHandler(middleware_timeout(middleware_recovery(middleware_defaultHeaders(next)))))
 }
 
 // --- --- --- Header --- --- ---
@@ -36,4 +36,10 @@ func middleware_defaultHeaders(next http.Handler) http.Handler {
 
 func middleware_timeout(next http.Handler) http.Handler {
 	return http.TimeoutHandler(next, timeout, "Response timeout reached.")
+}
+
+// --- --- --- Panic Recovery --- --- ---
+
+func middleware_recovery(next http.Handler) http.Handler {
+	return handlers.RecoveryHandler()(next)
 }
