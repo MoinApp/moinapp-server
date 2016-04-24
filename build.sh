@@ -7,4 +7,3 @@ if [ $BRANCH = "" ];
 fi
 
 go build -ldflags "-X main.APP_VERSION=$BRANCH"
-

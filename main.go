@@ -2,7 +2,6 @@
 package main
 
 import (
-	"errors"
 	"log"
 	"os"
 	"runtime"
@@ -16,10 +15,6 @@ const (
 	APP_NAME = "MoinApp-Server"
 )
 
-var (
-	ErrIncorrectCompilation = errors.New("The application was not compiled correctly. Please refer to the README for further details.")
-)
-
 var APP_VERSION string
 
 func isProduction() bool {
@@ -27,7 +22,7 @@ func isProduction() bool {
 }
 func checkCorrectCompilation() {
 	if APP_VERSION == "" {
-		panic(ErrIncorrectCompilation)
+		APP_VERSION = "unknown"
 	}
 }
 
