@@ -1,9 +1,13 @@
 language: go
 go:
+  - 1.4
+  - 1.5
   - 1.6
+  - tip
 
 install:
-- go get github.com/tools/godep
-- godep restore
-script: build.sh
-
+  - go get github.com/tools/godep
+  - godep restore
+script:
+  - build.sh
+  - go test -v ./...
