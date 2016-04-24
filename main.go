@@ -2,6 +2,7 @@
 package main
 
 import (
+	"errors"
 	"log"
 	"os"
 	"runtime"
@@ -13,15 +14,26 @@ import (
 
 const (
 	APP_NAME = "MoinApp-Server"
-	// TODO: let this be written at compile-time
-	APP_VERSION = "feature/go-rewrite"
 )
+
+var (
+	ErrIncorrectCompilation = errors.New("The application was not compiled correctly. Please refer to the README for further details.")
+)
+
+var APP_VERSION string
 
 func isProduction() bool {
 	return (os.Getenv("PRODUCTION") != "")
 }
+func checkCorrectCompilation() {
+	if APP_VERSION == "" {
+		panic(ErrIncorrectCompilation)
+	}
+}
 
 func main() {
+	checkCorrectCompilation()
+
 	log.Printf("%v %q on %v/%v\n", APP_NAME, APP_VERSION, runtime.GOOS, runtime.GOARCH)
 	log.Println("Hello! Booting...")
 	models.InitDB(isProduction())
