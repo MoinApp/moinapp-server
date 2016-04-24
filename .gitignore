@@ -7,3 +7,4 @@ db.sqlite3
 
 # Sublime Text
 *.sublime-workspace
+*.sublime-project
