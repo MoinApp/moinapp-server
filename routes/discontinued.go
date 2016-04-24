@@ -23,10 +23,10 @@ func discontinuationHandler(rw http.ResponseWriter, req *http.Request) {
 		Message: ErrAPIDiscontinued.Error(),
 	}
 
-	data, err := json.Marshal(response)
-	if err != nil {
+	if data, err := json.Marshal(response); err != nil {
 		http.Error(rw, err.Error(), http.StatusInternalServerError)
 	} else {
+		rw.Header().Set("Content-Type", "application/json")
 		http.Error(rw, string(data), status)
 	}
 }
