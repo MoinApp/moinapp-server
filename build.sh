@@ -5,19 +5,14 @@ if [[ $TRAVIS = true ]] && [[ $CI = true ]]; then
 
   if [[ $TRAVIS_TAG ]]; then
     # if building a tag
-    BRANCH=$TRAVIS_TAG
+    NAME=$TRAVIS_TAG
   else
-    # else we are building a branch
-    BRANCH=$TRAVIS_BRANCH
+    # else we are building a commit
+    NAME=$TRAVIS_COMMIT
   fi
 else
   # anywhere else, ask git!
-  BRANCH=$(git symbolic-ref --short -q HEAD)
-  # or if our head is detached, ask for the commit hash
-  if [[ $BRANCH = "" ]];
-    then
-    BRANCH = git rev-parse HEAD
-  fi
+  NAME=$(git rev-parse HEAD)
 fi
 
-go build -ldflags "-X github.com/MoinApp/moinapp-server/info.AppVersion=$BRANCH"
+go build -ldflags "-X github.com/MoinApp/moinapp-server/info.AppVersion=$NAME"
