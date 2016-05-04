@@ -138,7 +138,7 @@ func FindUsersByName(username string) []*User {
 func FindUserById(id interface{}) *User {
 	var result = nilUser()
 
-	db.Where("id = ?", id).First(result)
+	db.Where("id = ?", id).First(&result)
 
 	return result
 }
