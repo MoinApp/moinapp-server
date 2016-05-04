@@ -2,9 +2,6 @@
 	"ImportPath": "github.com/MoinApp/moinapp-server",
 	"GoVersion": "go1.6",
 	"GodepVersion": "v62",
-	"Packages": [
-		"github.com/MoinApp/moinapp-server"
-	],
 	"Deps": [
 		{
 			"ImportPath": "github.com/Coccodrillo/apns",
