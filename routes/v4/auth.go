@@ -42,7 +42,7 @@ func serveSignUp(rw http.ResponseWriter, req *http.Request) {
 		return
 	}
 	body.Email = strings.Trim(body.Email, " ")
-	body.Name = strings.Trim(body.Email, " ")
+	body.Name = strings.Trim(body.Name, " ")
 	body.Password = strings.Trim(body.Password, " ")
 
 	if body.Email == "" || body.Name == "" || body.Password == "" {
@@ -72,7 +72,7 @@ func serveAuthentication(rw http.ResponseWriter, req *http.Request) {
 		sendErrorCode(rw, err, http.StatusBadRequest)
 		return
 	}
-	body.Name = strings.Trim(body.Email, " ")
+	body.Name = strings.Trim(body.Name, " ")
 	body.Password = strings.Trim(body.Password, " ")
 
 	if body.Name == "" || body.Password == "" {
