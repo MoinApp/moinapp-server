@@ -2,8 +2,13 @@ package v4
 
 import (
 	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
+)
+
+var (
+	ErrBadRequest = errors.New("Invalid request.")
 )
 
 type errorResponse struct {

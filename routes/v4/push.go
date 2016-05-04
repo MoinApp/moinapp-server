@@ -30,6 +30,11 @@ func serveAddPushToken(rw http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	if request.Type == "" || request.Token == "" {
+		sendErrorCode(rw, ErrBadRequest, http.StatusBadRequest)
+		return
+	}
+
 	var tokenDBType models.TokenType
 	switch request.Type {
 	case APNTokenType:

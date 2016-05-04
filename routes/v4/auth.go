@@ -5,9 +5,11 @@ package v4
 import (
 	"encoding/json"
 	"errors"
+	"net/http"
+	"strings"
+
 	"github.com/MoinApp/moinapp-server/models"
 	"github.com/MoinApp/moinapp-server/routes/v4/auth"
-	"net/http"
 )
 
 type signUpRequest struct {
@@ -37,6 +39,14 @@ func serveSignUp(rw http.ResponseWriter, req *http.Request) {
 	err := decoder.Decode(&body)
 	if err != nil {
 		sendErrorCode(rw, err, http.StatusBadRequest)
+		return
+	}
+	body.Email = strings.Trim(body.Email, " ")
+	body.Name = strings.Trim(body.Email, " ")
+	body.Password = strings.Trim(body.Password, " ")
+
+	if body.Email == "" || body.Name == "" || body.Password == "" {
+		sendErrorCode(rw, ErrBadRequest, http.StatusBadRequest)
 		return
 	}
 

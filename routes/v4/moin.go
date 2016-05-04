@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/MoinApp/moinapp-server/models"
 	"github.com/MoinApp/moinapp-server/push"
@@ -22,8 +23,14 @@ func serveMoin(rw http.ResponseWriter, req *http.Request) {
 		sendErrorCode(rw, err, http.StatusBadRequest)
 		return
 	}
+	body.Name = strings.Trim(body.Name, " ")
 
 	fmt.Printf("Moin request: %+v\n", body)
+
+	if body.Name == "" {
+		sendErrorCode(rw, ErrBadRequest, http.StatusBadRequest)
+		return
+	}
 
 	currentUser := getUserFromRequest(req)
 	targetUser := models.FindUserByName(body.Name)

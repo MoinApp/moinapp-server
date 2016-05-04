@@ -4,11 +4,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/MoinApp/moinapp-server/models"
-	"github.com/gorilla/mux"
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
+
+	"github.com/MoinApp/moinapp-server/models"
+	"github.com/gorilla/mux"
 )
 
 var (
@@ -33,7 +35,12 @@ func newUserResponse(userModel *models.User) userResponse {
 
 func serveGetUserProfile(rw http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
-	username := vars["username"]
+	username := strings.Trim(vars["username"], " ")
+
+	if username == "" {
+		sendErrorCode(rw, ErrBadRequest, http.StatusBadRequest)
+		return
+	}
 
 	user := models.FindUserByName(username)
 	if !user.IsResult() {
@@ -56,7 +63,11 @@ func serveSearchUser(rw http.ResponseWriter, req *http.Request) {
 		return
 	}
 	query := uri.Query()
-	username := query.Get("username")
+	username := strings.Trim(query.Get("username"), " ")
+	if username == "" {
+		sendErrorCode(rw, ErrBadRequest, http.StatusBadRequest)
+		return
+	}
 
 	users := models.FindUsersByName(username)
 	profiles := make([]userResponse, len(users))
