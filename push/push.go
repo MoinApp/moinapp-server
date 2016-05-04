@@ -2,13 +2,13 @@ package push
 
 import (
 	"errors"
-	"fmt"
-	"github.com/Coccodrillo/apns"
-	"github.com/MoinApp/moinapp-server/models"
-	"github.com/alexjlockwood/gcm"
 	"log"
 	"math/rand"
 	"os"
+
+	"github.com/Coccodrillo/apns"
+	"github.com/MoinApp/moinapp-server/models"
+	"github.com/alexjlockwood/gcm"
 )
 
 type PushNotification struct {
@@ -68,10 +68,6 @@ func initGoogleCloudMessaging() {
 func SendMoinNotificationToUser(receiver, sender *models.User) {
 	pushTokens := receiver.GetPushTokens()
 
-	/* if len(pushTokens) < 1 {
-		return
-	} */
-
 	notification := &PushNotification{
 		Message:    "by " + sender.Name,
 		Sound:      randomSoundFilename(),
@@ -91,7 +87,7 @@ func SendPushNotificationToAll(tokens []models.PushToken, notification *PushNoti
 	}
 }
 func SendPushNotification(token models.PushToken, notification *PushNotification) {
-	fmt.Printf("Send notification %+v to token %+v...\n", notification, token)
+	//fmt.Printf("Send notification %+v to token %+v...\n", notification, token)
 
 	switch token.Type {
 	case models.APNToken:
@@ -115,8 +111,8 @@ func sendApplePushNotification(token string, notification *PushNotification) {
 		pn.Set(k, v)
 	}
 
-	s, _ := pn.PayloadString()
-	fmt.Printf("APNS: %v\n", s)
+	pn.PayloadString()
+	//fmt.Printf("APNS: %v\n", s)
 
 	response := apnsClient.Send(pn)
 	if !response.Success {
@@ -126,9 +122,9 @@ func sendApplePushNotification(token string, notification *PushNotification) {
 func sendGoogleCloudMessagingNotification(registrationID string, notification *PushNotification) {
 	message := gcm.NewMessage(notification.Payload, registrationID)
 
-	response, err := gcmSender.Send(message, GoogleCloudMessagingRetries)
+	_, err := gcmSender.Send(message, GoogleCloudMessagingRetries)
 	if err != nil {
 		log.Printf("GCM error: %v.", err)
 	}
-	fmt.Printf("GCM reponse: %+v\n", response)
+	//fmt.Printf("GCM reponse: %+v\n", response)
 }
