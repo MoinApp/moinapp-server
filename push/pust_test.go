@@ -28,6 +28,12 @@ func TestEnvironmentVariables(t *testing.T) {
 	if apnCert != v {
 		t.Errorf("Wrong APNS certificate. Expected: %v. Got: %v.", v, apnCert)
 	}
+
+	os.Setenv("APN_KEY", v)
+	apnKey := getAPNSKey()
+	if apnKey != v {
+		t.Errorf("Wrong APNS key. Expected: %v. Got: %v.", v, apnCert)
+	}
 }
 
 func TestInit(t *testing.T) {

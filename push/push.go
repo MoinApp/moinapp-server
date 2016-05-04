@@ -41,6 +41,9 @@ func getGCMAPIKey() string {
 func getAPNSCertificate() string {
 	return os.Getenv("APN_CERT")
 }
+func getAPNSKey() string {
+	return os.Getenv("APN_KEY")
+}
 
 func InitPushServices(isProduction bool) {
 	initApplePushNotificationService(isProduction)
@@ -56,7 +59,7 @@ func initApplePushNotificationService(isProduction bool) {
 
 	// TODO: this is an PFX file. Need to separate out PEM and KEY
 	certificateBase64 := getAPNSCertificate()
-	keyBase64 := getAPNSCertificate()
+	keyBase64 := getAPNSKey()
 	apnsClient = apns.BareClient(gateway, certificateBase64, keyBase64)
 }
 func initGoogleCloudMessaging() {
