@@ -72,6 +72,13 @@ func serveAuthentication(rw http.ResponseWriter, req *http.Request) {
 		sendErrorCode(rw, err, http.StatusBadRequest)
 		return
 	}
+	body.Name = strings.Trim(body.Email, " ")
+	body.Password = strings.Trim(body.Password, " ")
+
+	if body.Name == "" || body.Password == "" {
+		sendErrorCode(rw, ErrBadRequest, http.StatusBadRequest)
+		return
+	}
 
 	user := models.FindUserWithCredentials(body.Name, body.Password)
 
