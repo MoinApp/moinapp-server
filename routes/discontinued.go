@@ -27,6 +27,7 @@ func discontinuationHandler(rw http.ResponseWriter, req *http.Request) {
 		http.Error(rw, err.Error(), http.StatusInternalServerError)
 	} else {
 		rw.Header().Set("Content-Type", "application/json")
-		http.Error(rw, string(data), status)
+		rw.WriteHeader(status)
+		rw.Write([]byte(data))
 	}
 }
