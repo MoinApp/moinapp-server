@@ -3,8 +3,9 @@ package v4
 import (
 	"encoding/json"
 	"errors"
-	"github.com/MoinApp/moinapp-server/models"
 	"net/http"
+
+	"github.com/MoinApp/moinapp-server/models"
 )
 
 type addPushTokenRequest struct {

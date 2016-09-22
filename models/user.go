@@ -4,8 +4,9 @@ import (
 	"crypto/md5"
 	"crypto/sha256"
 	"fmt"
-	"github.com/jinzhu/gorm"
 	"time"
+
+	"github.com/jinzhu/gorm"
 )
 
 type User struct {
