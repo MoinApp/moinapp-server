@@ -10,5 +10,5 @@ install:
   - go get github.com/tools/godep
   - godep restore
 script:
-  - build.sh
+  - ./build.sh
   - go test -v -cover -race ./...
